@@ -1,10 +1,11 @@
 const canvas = document.getElementById("gameScreen");
 const ctx = canvas.getContext("2d");
 
-var HEIGHT = 600;
-var WIDTH = 1000;
+const HEIGHT = 600;
+const WIDTH = 1000;
 
 var STOP = false;
+var WINNER = "None";
 
 var dS = 7;
 // Change in speed when power up is collected
@@ -14,6 +15,7 @@ var p1 = {
     speed: dS,
     pos: [100, 280],
     width: 40,
+    acolor: "lime",
     color: "green",
     Up: false,
     Left: false,
@@ -30,6 +32,7 @@ var p2 = {
     speed: dS,
     pos: [860, 280],
     width: 40,
+    acolor: "crimson",
     color: "red",
     Up: false,
     Left: false,
@@ -48,6 +51,7 @@ var foodUp = 10;
 
 function GameLoop(){
     if(STOP){
+        GoToEndingScreen();
         return;
     }
     // Clear Screen
@@ -88,13 +92,53 @@ function RectangleCollider(x1, y1, w1, x2, y2, w2){
     }
 }
 
+function GoToEndingScreen(){
+    Rect("white", 0, 0, WIDTH, HEIGHT);
+    
+    ctx.fillStyle = "black";
+    ctx.font = "30px Arial";
+    ctx.textAlign = "center";
+    if(WINNER == "p1"){
+        // Add a point to p1's total
+        ctx.fillText("Player 1 Wins: (Show updated round score)", 500, 300);
+    } else if (WINNER == "p2"){
+        // Add a point to p2's total
+        ctx.fillText("Player 2 Wins: (Show updated round score)", 500, 300);
+    } else {
+        // Tie, do not add a point to either
+        ctx.fillText("Tie: (Show updated round score)", 500, 300);
+    }
+
+    // Wait until space bar is pressed to move on to the next game
+}
+
 function CollisionDetect(){
+
+   // Heads collide
+   if(RectangleCollider(p1.pos[0], p1.pos[1], p1.width, p2.pos[0], p2.pos[1], p2.width)){
+        STOP = true;
+
+        if(p1.len > p2.len){
+            WINNER = "p1";
+            console.log("Green wins!");
+        } else if (p2.len > p1.len){
+            WINNER = "p2";
+            console.log("Red Wins");
+        } else {
+            WINNER = "tie";
+            console.log("Tie!");
+        }
+        return;
+    }
+
     // P1
     try{
         for(i = 0; i < p2.len; i++){
             if(RectangleCollider(p1.pos[0], p1.pos[1], p1.width, p2.body[i][0], p2.body[i][1], p2.width)){
                 console.log("Player 2 wins!");
+                WINNER = "p2";
                 STOP = true;
+                return;
             }
         }
     } catch {}
@@ -103,23 +147,38 @@ function CollisionDetect(){
         for(i = 0; i < p1.len; i++){
             if(RectangleCollider(p2.pos[0], p2.pos[1], p2.width, p1.body[i][0], p1.body[i][1], p1.width)){
                 console.log("Player 1 wins!");
+                WINNER = "p1";
                 STOP = true;
+                return;
             }
         }
     } catch {}
-
-    // Heads collide
-    if(RectangleCollider(p1.pos[0], p1.pos[1], p1.width, p2.pos[0], p2.pos[1], p2.width)){
-        console.log("Tie!");
-        STOP = true;
-    }
 }
 
 function DrawPlayer(p){
     try{
+        // Always striped color
         for(i = 0; i < p.len; i++){
-            Rect(p.color, p.body[i][0], p.body[i][1], p.width, p.width);
+                
+            if(i%4 <= 1) Rect(p.acolor, p.body[i][0], p.body[i][1], p.width, p.width);
+            else Rect(p.color, p.body[i][0], p.body[i][1], p.width, p.width);
+
         }
+        // SWITCH Into switching color mode for FAST
+        // if(p.Fast && p.len > 8){
+        //     for(i = 0; i < p.len; i++){
+                
+        //         if(i%4 <= 1) Rect(p.acolor, p.body[i][0], p.body[i][1], p.width, p.width);
+        //         else Rect(p.color, p.body[i][0], p.body[i][1], p.width, p.width);
+
+        //     }
+        // }
+        // else {
+        //     for(i = 0; i < p.len; i++){
+        //         Rect(p.color, p.body[i][0], p.body[i][1], p.width, p.width);
+        //     }
+        // }
+
     } catch {}
 
     ctx.strokeStyle = "black";
@@ -139,9 +198,6 @@ function MovePlayer(p){
     if(p.body.length >= p.len){
         p.body.pop();
     }
-    currentX = p.pos[0];
-    currentY = p.pos[1];
-    p.body.unshift([currentX, currentY]);
 
     if((!p.Up && !p.Down && !p.Left && !p.Right) || (p.Left && p.Right && !p.Down && !p.Up) || (p.Up && p.Down && !p.Left && !p.Right)){
         if(p.last == "Up") p.pos[1] -= move;
@@ -182,10 +238,21 @@ function MovePlayer(p){
         p.pos[0] += move;
     }
 
-    if(p.pos[0]+p.width/2 > WIDTH) p.pos[0] = (p.pos[0]+p.width/2)%WIDTH;
-    if(p.pos[1]+p.width/2 > HEIGHT) p.pos[1] = (p.pos[1]+p.width/2)%HEIGHT;
-    if(p.pos[0] < 0) p.pos[0] += WIDTH-p.width/2;
-    if(p.pos[1] < 0) p.pos[1] += HEIGHT-p.width/2;
+    currentX = p.pos[0];
+    currentY = p.pos[1];
+    p.body.unshift([currentX, currentY]);
+
+
+
+    if(p.pos[0]+p.width/2 > WIDTH) p.pos[0] = -p.width/2;
+    if(p.pos[1]+p.width/2 > HEIGHT) p.pos[1] = -p.width/2;
+    if(p.pos[0]+p.width/2 < 0) p.pos[0] += WIDTH;
+    if(p.pos[1]+p.width/2 < 0) p.pos[1] += HEIGHT;
+
+    // if(p.pos[0]+p.width/2 > WIDTH) p.pos[0] = (p.pos[0]+p.width/2)%WIDTH;
+    // if(p.pos[1]+p.width/2 > HEIGHT) p.pos[1] = (p.pos[1]+p.width/2)%HEIGHT;
+    // if(p.pos[0]+p.width/2 < 0) p.pos[0] += WIDTH-p.width/2;
+    // if(p.pos[1]+p.width/2 < 0) p.pos[1] += HEIGHT-p.width/2;
 }
 
 function FoodSpawner(){
