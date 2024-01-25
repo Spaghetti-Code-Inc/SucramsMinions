@@ -18,8 +18,8 @@ function init() {
     p1jumpPower = -3;	
     p1deltaY = 0;
     //speed and base speed must equal each other at first
-    p1Speed = 18;
-    p1BaseSpeed = 18;
+    p1Velocity = 0;
+    p1TopSpeed = 18;
     p1Coins = 0;
 
     //player 2 vars
@@ -36,18 +36,19 @@ function init() {
     p2jumpPower = -3;	
     p2deltaY = 0;
 
-    p2Speed = 18;
-    p2BaseSpeed = 18;
+    p2Velocity = 0;
+    p2TopSpeed = 18;
     p2Coins = 0;
 
     //scene vars
     floorY = 550;
     //world physics vars
     drag = 0.2;
-    acceleration = 0.02;
+    acceleration = 0.08;
     jumpPower = -6;						//variable to set jump power for player
     gravityConstant = 0.2;				//variable to set gravity force
     gravityPower = 10;					//variable to set gravity power
+    particleAccelerator = false;
 
     coins = [];
 
@@ -116,80 +117,170 @@ function keyUpHandler(e){		//handles all keys when unpressed
 
 function updatePlayerPos () {
     //player one movement
-
-    //horizontal movement
+    //covers right movement
     if(p1rightPressed && !p1leftPressed){
-        if(p1PosX > gameScreen.width - p1width - 3){
-            p1Speed = p1BaseSpeed;
+        //sets p1 current velocty to non-zero number to later multiply by acceleration factor
+        if(p1Velocity < 1.5 && p1Velocity > -1.5){
+            p1Velocity = 1.5;
         }
-        else if(p1Speed < p1BaseSpeed * 2){
-            p1Speed *= (1+acceleration);
+        //accelerates cube
+        else if (p1Velocity < p1TopSpeed){
+            if(p1Velocity > 0){
+                p1Velocity *= 1+acceleration;
+            }
+            else{
+                p1Velocity*= 1-acceleration;
+            }
+        }
+        //ensures speed cap is maintained
+        if (p1Velocity > p1TopSpeed){
+            p1Velocity = p1TopSpeed;
         }
     }
-    if(p1leftPressed && !p1rightPressed){
-        if(p1PosX < 3){
-            p1Speed = p1BaseSpeed;
-        }
-        else if(p1Speed > 0){
-            p1Speed *= (1-acceleration);
-        }
-    }
-    if(p1Speed < p1BaseSpeed && p1PosX < 1){
-        p1Speed = p1BaseSpeed;
-    }
-    if(p1Speed > p1BaseSpeed && p1PosX > gameScreen.width - p1width - 1){
-        p1Speed = p1BaseSpeed;
-    }
-    else{
-        p1PosX+= (p1Speed - p1BaseSpeed);
-    }
-    if(!p1leftPressed && !p1rightPressed && p1Speed>p1BaseSpeed+0.3){
-        p1Speed-=drag;
-    }
-    if(!p1leftPressed && !p1rightPressed && p1Speed<p1BaseSpeed-0.3){
-        p1Speed+=drag;
-    }
-    if(!p1leftPressed && !p1rightPressed && p1Speed <= (p1BaseSpeed+0.3) && p1Speed >= (p1BaseSpeed-0.3)){
-        p1Speed = p1BaseSpeed;
-    }
-    //player two movement
 
-    //horizontal movement
-    if(p2rightPressed && !p2leftPressed){
-        if(p2PosX > gameScreen.width - p2width - 3){
-            p2Speed = p2BaseSpeed;
+    //adds velocity if ensured player wont move off screen
+    if(p1PosX + p1width < gameScreen.width && p1Velocity > 0){
+        //sets player one position to edge if adding the velocity would have moved it over the border, bounce
+        if(gameScreen.width - p1width < p1PosX + p1Velocity){
+            p1PosX = gameScreen.width - p1width;
+            p1Velocity *= -1;
         }
-        else if(p2Speed < p2BaseSpeed * 2){
-            p2Speed *= (1+acceleration);
-        }
-    }
-    if(p2leftPressed && !p2rightPressed){
-        if(p2PosX < 3){
-            p2Speed = p2BaseSpeed;
-        }
-        else if(p2Speed > 0){
-            p2Speed *= (1-acceleration);
+        else{
+            p1PosX += p1Velocity;
         }
     }
-    if(p2Speed < p2BaseSpeed && p2PosX < 1){
-        p2Speed = p2BaseSpeed;
+
+    //covers left movement
+    if(!p1rightPressed && p1leftPressed){
+        //sets p1 current velocty to non-zero number to later multiply by acceleration factor
+        if(p1Velocity < 1.5 && p1Velocity > -1.5){
+            p1Velocity = -1.5;
+        }
+        //accelerates cube
+        else if (p1Velocity > p1TopSpeed * -1){
+            if(p1Velocity < 0){
+                p1Velocity *= 1+acceleration;
+            }
+            else {
+                p1Velocity *= 1-acceleration;
+            }
+        } 
     }
-    if(p2Speed > p2BaseSpeed && p2PosX > gameScreen.width - p2width - 1){
-        p2Speed = p2BaseSpeed;
+    //adds velocity if ensured player wont move off screen
+    if(p1PosX > 0 && p1Velocity < 0){
+        //sets player one position to edge if adding the velocity would have moved it over the border
+        if(0 > p1PosX + p1Velocity){
+            p1PosX = 0;
+            p1Velocity = p1Velocity * -1;
+        }
+        else{
+            p1PosX += p1Velocity;
+        }
+        
     }
-    else{
-        p2PosX+= (p2Speed - p2BaseSpeed);
+
+    //ensures speed cap is maintained
+    if (p1Velocity > p1TopSpeed){
+        p1Velocity = p1TopSpeed;
     }
-    if(!p2leftPressed && !p2rightPressed && p2Speed>p2BaseSpeed+0.3){
-        p2Speed-=drag;
+    if (p1Velocity < p1TopSpeed * -1){
+        p1Velocity = p1TopSpeed * -1;
     }
-    if(!p2leftPressed && !p2rightPressed && p2Speed<p2BaseSpeed-0.3){
-        p2Speed+=drag;
+
+    //make player stop if nothing is pressed
+    if(!p1rightPressed && !p1leftPressed){
+        if(Math.abs(p1Velocity) > 0.2){
+            p1Velocity *= 1-acceleration;
+        }
+        else{
+            p1Velocity = 0;
+        }
+        
     }
-    if(!p2leftPressed && !p2rightPressed && p2Speed <= (p2BaseSpeed+0.3) && p2Speed >= (p2BaseSpeed-0.3)){
-        p2Speed = p2BaseSpeed;
-    }
+
     
+    ///player two movement
+    //covers right movement
+    if(p2rightPressed && !p2leftPressed){
+        //sets p1 current velocty to non-zero number to later multiply by acceleration factor
+        if(p2Velocity < 1.5 && p2Velocity > -1.5){
+            p2Velocity = 1.5;
+        }
+        //accelerates cube
+        else if (p2Velocity < p2TopSpeed){
+            if(p2Velocity > 0){
+                p2Velocity *= 1+acceleration;
+            }
+            else{
+                p2Velocity*= 1-acceleration;
+            }
+        }
+        //ensures speed cap is maintained
+        if (p2Velocity > p2TopSpeed){
+            p2Velocity = p2TopSpeed;
+        }
+    }
+
+    //adds velocity if ensured player wont move off screen
+    if(p2PosX + p2width < gameScreen.width && p2Velocity > 0){
+        //sets player one position to edge if adding the velocity would have moved it over the border, bounce
+        if(gameScreen.width - p2width < p2PosX + p2Velocity){
+            p2PosX = gameScreen.width - p2width;
+            p2Velocity *= -1;
+        }
+        else{
+            p2PosX += p2Velocity;
+        }
+    }
+
+    //covers left movement
+    if(!p2rightPressed && p2leftPressed){
+        //sets p1 current velocty to non-zero number to later multiply by acceleration factor
+        if(p2Velocity < 1.5 && p2Velocity > -1.5){
+            p2Velocity = -1.5;
+        }
+        //accelerates cube
+        else if (p2Velocity > p2TopSpeed * -1){
+            if(p2Velocity < 0){
+                p2Velocity *= 1+acceleration;
+            }
+            else {
+                p2Velocity *= 1-acceleration;
+            }
+        } 
+    }
+    //adds velocity if ensured player wont move off screen
+    if(p2PosX > 0 && p2Velocity < 0){
+        //sets player one position to edge if adding the velocity would have moved it over the border
+        if(0 > p2PosX + p2Velocity){
+            p2PosX = 0;
+            p2Velocity = p2Velocity * -1;
+        }
+        else{
+            p2PosX += p2Velocity;
+        }
+        
+    }
+
+    //ensures speed cap is maintained
+    if (p2Velocity > p2TopSpeed){
+        p2Velocity = p2TopSpeed;
+    }
+    if (p2Velocity < p2TopSpeed * -1){
+        p2Velocity = p2TopSpeed * -1;
+    }
+
+    //make player stop if nothing is pressed
+    if(!p2rightPressed && !p2leftPressed){
+        if(Math.abs(p2Velocity) > 0.2){
+            p2Velocity *= 1-acceleration;
+        }
+        else{
+            p2Velocity = 0;
+        }
+        
+    }
+    checkCoinCollision();
 }
 
 function checkJump() {
@@ -271,20 +362,18 @@ function doGravity() {
 
 function drawCoin(coinX, coinY){
     ctx.strokeStyle = "black";
-    ctx.beginPath();
-    ctx.arc(Number(coinX), Number(coinY), 10, 0, 360);
-    ctx.stroke();
-    ctx.closePath();
+    ctx.strokeRect(Number(coinX), Number(coinY), 30, 30);
     ctx.fillStyle = "yellow";
-    ctx.fill();
+    ctx.fillRect(Number(coinX), Number(coinY), 30, 30);
+    
     
 }
 
 function generateCoins() {
     
     coins[0] = [];
-    coins[0][0] = Math.random()*(gameScreen.width - 20)+20;
-    coins[0][1] = (Math.random()*(gameScreen.height-80 - 100)) + 100;
+    coins[0][0] = Math.random()*(gameScreen.width - 40);
+    coins[0][1] = Math.random()*(gameScreen.height-80 - 100) + 70;
     
 }
 
@@ -303,14 +392,14 @@ function drawBackground() {
 }
 
 function checkCoinCollision() {
-    if((p1PosX>coins[0][0] - 10 && p1PosX < coins[0][0] + 30) || (p1PosX+p1width>coins[0][0]- 10 && p1PosX + p1width < coins[0][0] + 30)){
-        if((p1PosY>coins[0][1]- 10 && p1PosY < coins[0][1] + 30) || (p1PosY+p1width>coins[0][1] - 10&& p1PosY + p1width < coins[0][1] + 30)){
+    if((p1PosX > coins[0][0] && p1PosX < coins[0][0] + 30) || (p1PosX + p1width > coins[0][0] && p1PosX + p1width < coins[0][0] + 30)){
+        if((p1PosY > coins[0][1] && p1PosY < coins[0][1] + 30) || (p1PosY + p1width > coins[0][1] && p1PosY + p1width < coins[0][1] + 30)){
             generateCoins();
             p1Coins++;
         }
     }
-    if((p2PosX>coins[0][0] - 10 && p2PosX < coins[0][0] + 30) || (p2PosX+p2width>coins[0][0]- 10 && p2PosX + p2width < coins[0][0] + 30)){
-        if((p2PosY>coins[0][1]- 10 && p2PosY < coins[0][1] + 30) || (p2PosY+p2width>coins[0][1] - 10&& p2PosY + p2width < coins[0][1] + 30)){
+    if((p2PosX > coins[0][0] && p2PosX < coins[0][0] + 30) || (p2PosX + p2width > coins[0][0] && p2PosX + p2width < coins[0][0] + 30)){
+        if((p2PosY >  coins[0][1] && p2PosY < coins[0][1] + 30) || (p2PosY + p2width > coins[0][1] && p2PosY + p2width < coins[0][1] + 30)){
             generateCoins();
             p2Coins++;
         }
