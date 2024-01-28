@@ -277,15 +277,15 @@ function collisionDetect(){
     //bullet collision detection
     for (let i = 0; i < bullets.length; i++){
         //player one
-        if(bullets[i][0] > p1Pos[0] - 25 && bullets[i][0] < p1Pos[0] + 25){
-            if(bullets[i][1] > p1Pos[1] - 25 && bullets[i][1] < p1Pos[1] + 25){
+        if(bullets[i][0] > p1Pos[0] - (25+Math.cos(p1Angle*TO_RADIANS)) && bullets[i][0] < p1Pos[0] + (25+Math.cos(p1Angle*TO_RADIANS))){
+            if(bullets[i][1] > p1Pos[1] -  (25+Math.sin(p1Angle*TO_RADIANS)) && bullets[i][1] < p1Pos[1] +  (25+Math.sin(p1Angle*TO_RADIANS))){
                 p1Alive = false;
                 console.log("red hit");
             }
         }
         //player two
-        if(bullets[i][0] > p2Pos[0] - 25 && bullets[i][0] < p2Pos[0] + 25){
-            if(bullets[i][1] > p2Pos[1] - 25 && bullets[i][1] < p2Pos[1] + 25){
+        if(bullets[i][0] > p2Pos[0] - (25+Math.cos(p2Angle*TO_RADIANS)) && bullets[i][0] < p2Pos[0] + (25+Math.cos(p2Angle*TO_RADIANS))){
+            if(bullets[i][1] > p2Pos[1] -  (25+Math.sin(p2Angle*TO_RADIANS)) && bullets[i][1] < p2Pos[1] +  (25+Math.sin(p2Angle*TO_RADIANS))){
                 p2Alive = false;
                 console.log("green hit");
             }
@@ -317,17 +317,33 @@ function drawGUI(){
         ctx.font = "50px Arial";
         ctx.fillText("Green Hit", 400, 300);
     }
-    
+}
+
+function goToEndScreen(){
+    ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
+    if(!p1Alive){
+        ctx.font = "50px Arial";
+        ctx.fillText("Red Hit", 400, 300);
+    }
+    if(!p2Alive){
+        ctx.font = "50px Arial";
+        ctx.fillText("Green Hit", 400, 300);
+    }
 }
 
 function gameLoop() {
-    ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
-    collisionDetect();
-    deltaPlayer();
-    bulletHander();
-    drawPlayers(p1Pos, p2Pos);
-    drawGUI();
-    requestAnimationFrame(gameLoop);
+    if(p1Alive && p2Alive){
+        ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
+        collisionDetect();
+        deltaPlayer();
+        bulletHander();
+        drawPlayers(p1Pos, p2Pos);
+        drawGUI();
+        requestAnimationFrame(gameLoop);
+    }
+    else{
+        goToEndScreen();
+    }
 }
 
 init();
