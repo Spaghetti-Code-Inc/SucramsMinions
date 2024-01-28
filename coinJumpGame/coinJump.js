@@ -2,13 +2,14 @@ var gameScreen = document.getElementById("gameScreen");
 var ctx = gameScreen.getContext('2d');
 
 
-
 function init() {
     //Player 1 vars
     p1PosX = 500;
     p1PosY = 500;
     p1width = 50;
     p1Color = 'red';
+    p1Sprite = new Image(p1width, p1width);
+    p1Sprite.src = 'Assets\\redGuy2.png';
     p1leftPressed = false;
     p1rightPressed = false;
     //jump vars
@@ -27,6 +28,8 @@ function init() {
     p2PosY = 500;
     p2width = 50;
     p2Color = 'green';
+    p2Sprite = new Image(p2width, p2width);
+    p2Sprite.src = 'Assets\\greenGuy2.png';
     p2leftPressed = false;
     p2rightPressed = false;
     //jump vars
@@ -42,6 +45,8 @@ function init() {
 
     //scene vars
     floorY = 550;
+    background = new Image(p1width, p1width);
+    background.src = 'Assets\\monalisa.jpg';
     //world physics vars
     drag = 0.2;
     acceleration = 0.08;
@@ -298,7 +303,7 @@ function checkJump() {
             p1jumpVelocity = 0;
             p1jumpPower = -3;	
             p1deltaY = 0;
-            generateCoins();
+            
         }
         else{
             p1PosY += p1deltaY - 10;
@@ -319,7 +324,7 @@ function checkJump() {
             p2jumpVelocity = 0;
             p2jumpPower = -3;	
             p2deltaY = 0;
-            generateCoins();
+            //generateCoins();
         }
         else{
             p2PosY += p2deltaY - 10;
@@ -379,12 +384,18 @@ function generateCoins() {
 
 
 function drawPlayer (posX, posY, width, color) {
-    ctx.fillStyle = color;
-    ctx.fillRect(posX, posY, width, width);
+    if(color == 'red'){
+        ctx.drawImage(p1Sprite, posX, posY, width, width);
+    }
+    if(color == 'green'){
+        ctx.drawImage(p2Sprite, posX, posY, width, width);
+    }
+    
 }
 
 function drawBackground() {
-    ctx.fillStyle = 'gray';
+    ctx.drawImage(background, 0, 0, gameScreen.width, gameScreen.height);
+    ctx.fillStyle = 'black';
     ctx.fillRect(0, 550, 1200, 50)
     ctx.font = "20px Arial";
     ctx.fillText("Green: " + p2Coins, 10, 50);
