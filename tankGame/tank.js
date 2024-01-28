@@ -18,6 +18,7 @@ function init() {
     p1Reload = 0;
     p1Alive = true;
     p1CanGo = [true, true];          //variable for if space in front and behind is clear    [front clear, back clear]
+    p1TimePressed = 0;          //variable for rotation acceleration to increase aim potential
     p2rightPressed = false;
     p2leftPressed = false;
     p2upPressed = false;
@@ -26,6 +27,7 @@ function init() {
     p2Reload = 0;
     p2Alive = true;
     p2CanGo = [true, true];         //variable for if space in front and behind is clear    [front clear, back clear]
+    p2TimePressed = 0;
     //setting vars
     rotateSpeed = 3;
     movementSpeed = 3;
@@ -91,16 +93,20 @@ function keyDownHandler(e){		//handles all keys when pressed down
 function keyUpHandler(e){		//handles all keys when unpressed
 	if(e.key == "ArrowRight"){
 		p1rightPressed = false;
+        p1TimePressed = 0;
 	}//end of if stm
     else if(e.key == "ArrowLeft"){
             p1leftPressed = false;
+            p1TimePressed = 0;
     }//end of else if stm
 
     if(e.key == "d"){
 		p2rightPressed = false;
+        p2TimePressed = 0;
 	}//end of if stm
     else if(e.key == "a"){
         p2leftPressed = false;
+        p2TimePressed = 0;
     }//end of else if stm
 	
 	
@@ -162,10 +168,16 @@ function deltaPlayer(){
         p1Pos[1]-= (Math.sin(p1Angle*TO_RADIANS)*movementSpeed);
     }
     if(p1rightPressed){
-        p1Angle+=rotateSpeed;
+        if(p1TimePressed < 2){
+            p1TimePressed+=0.04;
+        }
+        p1Angle+=rotateSpeed*p1TimePressed;
     }
     if(p1leftPressed){
-        p1Angle-=rotateSpeed;
+        if(p1TimePressed < 2){
+            p1TimePressed+=0.04;
+        }
+        p1Angle-=rotateSpeed*p1TimePressed;
     }
     if(p2upPressed && p2CanGo[0]){
         p2Pos[0]+= (Math.cos(p2Angle*TO_RADIANS)*movementSpeed);
@@ -176,12 +188,17 @@ function deltaPlayer(){
         p2Pos[1]-= (Math.sin(p2Angle*TO_RADIANS)*movementSpeed);
     }
     if(p2rightPressed){
-        p2Angle+=rotateSpeed;
+        if(p2TimePressed < 2){
+            p2TimePressed+=0.04;
+        }
+        p2Angle+=rotateSpeed*p2TimePressed;
     }
     if(p2leftPressed){
-        p2Angle-=rotateSpeed;
+        if(p2TimePressed < 2){
+            p2TimePressed+=0.04;
+        }
+        p2Angle-=rotateSpeed*p2TimePressed;
     }
-    
 }
 
 function bulletHander(){
