@@ -5,9 +5,9 @@ const TO_RADIANS = Math.PI / 180;
 
 function init() {
     //pos and orientation vars
-    p1Pos = [500, 300];
+    p1Pos = [800, 300];
     p2Pos = [200, 300];
-    p1Angle = 0;
+    p1Angle = 180;
     p2Angle = 0;
     //movement vars
     p1rightPressed = false;
@@ -16,18 +16,22 @@ function init() {
     p1downPressed = false;
     p1shotFired = false;
     p1Reload = 0;
+    p1Alive = true;
+    p1CanGo = [true, true];          //variable for if space in front and behind is clear    [front clear, back clear]
     p2rightPressed = false;
     p2leftPressed = false;
     p2upPressed = false;
     p2downPressed = false;
     p2shotFired = false;
     p2Reload = 0;
+    p2Alive = true;
+    p2CanGo = [true, true];         //variable for if space in front and behind is clear    [front clear, back clear]
     //setting vars
-    rotateSpeed = 4;
+    rotateSpeed = 3;
     movementSpeed = 3;
     reloadSpeed = 3;         //in seconds
     //bulletVars
-    bulletSpeed = 4;
+    bulletSpeed = 5;
     bullets = [];
     numBullets = 10;
     p1BulletsLeft = numBullets;
@@ -149,11 +153,11 @@ function drawPlayers(p1Position, p2Position) {
     ctx.translate(-p2Position[0] - Math.cos(p2Angle*TO_RADIANS), -p2Position[1] + Math.sin(p2Angle*TO_RADIANS));
 }
 function deltaPlayer(){
-    if(p1upPressed){
+    if(p1upPressed && p1CanGo[0]){
         p1Pos[0]+= (Math.cos(p1Angle*TO_RADIANS)*movementSpeed);
         p1Pos[1]+= (Math.sin(p1Angle*TO_RADIANS)*movementSpeed);
     }
-    if(p1downPressed){
+    if(p1downPressed && p1CanGo[1]){
         p1Pos[0]-= (Math.cos(p1Angle*TO_RADIANS)*movementSpeed);
         p1Pos[1]-= (Math.sin(p1Angle*TO_RADIANS)*movementSpeed);
     }
@@ -163,11 +167,11 @@ function deltaPlayer(){
     if(p1leftPressed){
         p1Angle-=rotateSpeed;
     }
-    if(p2upPressed){
+    if(p2upPressed && p2CanGo[0]){
         p2Pos[0]+= (Math.cos(p2Angle*TO_RADIANS)*movementSpeed);
         p2Pos[1]+= (Math.sin(p2Angle*TO_RADIANS)*movementSpeed);
     }
-    if(p2downPressed){
+    if(p2downPressed && p2CanGo[1]){
         p2Pos[0]-= (Math.cos(p2Angle*TO_RADIANS)*movementSpeed);
         p2Pos[1]-= (Math.sin(p2Angle*TO_RADIANS)*movementSpeed);
     }
@@ -182,12 +186,12 @@ function deltaPlayer(){
 
 function bulletHander(){
     if(p1shotFired && p1BulletsLeft > 0){
-        bullets.push([p1Pos[0], p1Pos[1], p1Angle]);
+        bullets.push([p1Pos[0] + 45 * Math.cos(p1Angle*TO_RADIANS), p1Pos[1] + 45 * Math.sin(p1Angle*TO_RADIANS), p1Angle]);
         p1BulletsLeft--;
         p1shotFired=false;
     }
     if(p2shotFired && p2BulletsLeft > 0){
-        bullets.push([p2Pos[0], p2Pos[1], p2Angle]);
+        bullets.push([p2Pos[0] + 45 * Math.cos(p2Angle*TO_RADIANS), p2Pos[1] + 45 * Math.sin(p2Angle*TO_RADIANS), p2Angle]);
         p2BulletsLeft--;
         p2shotFired=false;
     }
@@ -235,6 +239,60 @@ function reload(){
     }
 }
 
+function collisionDetect(){
+    //player 1 border, so tank doesn't go off screen; forwards direction
+    nextPosF1 = [p1Pos[0] + Math.cos(p1Angle*TO_RADIANS)*movementSpeed, p1Pos[1] + Math.sin(p1Angle*TO_RADIANS)*movementSpeed];
+    if(nextPosF1[0] + (25+Math.cos(p1Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosF1[0] - (25-Math.cos(p1Angle*TO_RADIANS)) < 0 || nextPosF1[1] + (25+Math.sin(p1Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosF1[1] - (25-Math.sin(p1Angle*TO_RADIANS)) < 0){
+        p1CanGo[0] = false;
+    }
+    else{
+        p1CanGo[0] = true;
+    }
+    //backwards player 1
+    nextPosB1 = [p1Pos[0] - Math.cos(p1Angle*TO_RADIANS)*movementSpeed, p1Pos[1] - Math.sin(p1Angle*TO_RADIANS)*movementSpeed];
+    if(nextPosB1[0] + (25+Math.cos(p1Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosB1[0] - (25-Math.cos(p1Angle*TO_RADIANS)) < 0 || nextPosB1[1] + (25+Math.sin(p1Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosB1[1] - (25-Math.sin(p1Angle*TO_RADIANS)) < 0){
+        p1CanGo[1] = false;
+    }
+    else{
+        p1CanGo[1] = true;
+    }
+
+    //player 2 border, so tank doesn't go off screen
+    nextPosF2 = [p2Pos[0] + Math.cos(p2Angle*TO_RADIANS)*movementSpeed, p2Pos[1] + Math.sin(p2Angle*TO_RADIANS)*movementSpeed];
+    if(nextPosF2[0] + (25+Math.cos(p2Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosF2[0] - (25-Math.cos(p2Angle*TO_RADIANS)) < 0 || nextPosF2[1] + (25+Math.sin(p2Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosF2[1] - (25-Math.sin(p2Angle*TO_RADIANS)) < 0){
+        p2CanGo[0] = false;
+    }
+    else{
+        p2CanGo[0] = true;
+    }
+    //backwards player 2
+    nextPosB2 = [p2Pos[0] - Math.cos(p2Angle*TO_RADIANS)*movementSpeed, p2Pos[1] - Math.sin(p2Angle*TO_RADIANS)*movementSpeed];
+    if(nextPosB2[0] + (25+Math.cos(p2Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosB2[0] - (25-Math.cos(p2Angle*TO_RADIANS)) < 0 || nextPosB2[1] + (25+Math.sin(p2Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosB2[1] - (25-Math.sin(p2Angle*TO_RADIANS)) < 0){
+        p2CanGo[1] = false;
+    }
+    else{
+        p2CanGo[1] = true;
+    }
+
+    //bullet collision detection
+    for (let i = 0; i < bullets.length; i++){
+        //player one
+        if(bullets[i][0] > p1Pos[0] - 25 && bullets[i][0] < p1Pos[0] + 25){
+            if(bullets[i][1] > p1Pos[1] - 25 && bullets[i][1] < p1Pos[1] + 25){
+                p1Alive = false;
+                console.log("red hit");
+            }
+        }
+        //player two
+        if(bullets[i][0] > p2Pos[0] - 25 && bullets[i][0] < p2Pos[0] + 25){
+            if(bullets[i][1] > p2Pos[1] - 25 && bullets[i][1] < p2Pos[1] + 25){
+                p2Alive = false;
+                console.log("green hit");
+            }
+        }
+    }
+}
+
 function drawGUI(){
     ctx.font = "20px Arial";
     
@@ -250,11 +308,21 @@ function drawGUI(){
         ctx.fillStyle = 'gray';
         ctx.fillRect(gameScreen.clientWidth - (20 * i) - 50, 22.5, 10, 15);
     }
+
+    if(!p1Alive){
+        ctx.font = "50px Arial";
+        ctx.fillText("Red Hit", 400, 300);
+    }
+    if(!p2Alive){
+        ctx.font = "50px Arial";
+        ctx.fillText("Green Hit", 400, 300);
+    }
     
 }
 
 function gameLoop() {
     ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
+    collisionDetect();
     deltaPlayer();
     bulletHander();
     drawPlayers(p1Pos, p2Pos);
