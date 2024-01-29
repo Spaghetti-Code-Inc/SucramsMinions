@@ -397,7 +397,7 @@ function drawBackground() {
     ctx.drawImage(background, 0, 0, gameScreen.width, gameScreen.height);
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 550, 1200, 50)
-    ctx.font = "20px Arial";
+    ctx.font = "20px Arial";wd
     ctx.fillText("Green: " + p2Coins, 10, 50);
     ctx.fillText("Red: " + p1Coins, 900, 50);
 }

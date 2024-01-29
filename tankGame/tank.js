@@ -2,7 +2,7 @@ var gameScreen = document.getElementById("gameScreen");
 var ctx = gameScreen.getContext('2d');
 
 const TO_RADIANS = Math.PI / 180;
-
+const TO_DEGREES = 180 / Math.PI;
 function init() {
     //pos and orientation vars
     p1Pos = [800, 300];
@@ -38,6 +38,7 @@ function init() {
     numBullets = 10;
     p1BulletsLeft = numBullets;
     p2BulletsLeft = numBullets;
+    numBulletBounces = 1;
     
 
 
@@ -203,12 +204,12 @@ function deltaPlayer(){
 
 function bulletHander(){
     if(p1shotFired && p1BulletsLeft > 0){
-        bullets.push([p1Pos[0] + 45 * Math.cos(p1Angle*TO_RADIANS), p1Pos[1] + 45 * Math.sin(p1Angle*TO_RADIANS), p1Angle]);
+        bullets.push([p1Pos[0] + 45 * Math.cos(p1Angle*TO_RADIANS), p1Pos[1] + 45 * Math.sin(p1Angle*TO_RADIANS), p1Angle, numBulletBounces]);
         p1BulletsLeft--;
         p1shotFired=false;
     }
     if(p2shotFired && p2BulletsLeft > 0){
-        bullets.push([p2Pos[0] + 45 * Math.cos(p2Angle*TO_RADIANS), p2Pos[1] + 45 * Math.sin(p2Angle*TO_RADIANS), p2Angle]);
+        bullets.push([p2Pos[0] + 45 * Math.cos(p2Angle*TO_RADIANS), p2Pos[1] + 45 * Math.sin(p2Angle*TO_RADIANS), p2Angle, numBulletBounces]);
         p2BulletsLeft--;
         p2shotFired=false;
     }
@@ -217,12 +218,34 @@ function bulletHander(){
         moveBullet(bullets[i])
         drawBullet(bullets[i][0], bullets[i][1]);
         if(bullets[i][0] > gameScreen.clientWidth || bullets[i][0] < 0 || bullets[i][1] > gameScreen.clientHeight || bullets[i][1] < 0){
-            if(bullets.length == 1){
-                bullets = [];
+            if(bullets[i][3] > 0){
+                if(bullets[i][0] > gameScreen.clientWidth){
+                    bullets[i][2] = 180 - bullets[i][2];
+                    console.log("bounce left");
+                }
+                else if(bullets[i][0] < 0){
+                    bullets[i][2] = 180 - bullets[i][2];
+                    console.log("bounce right");
+                }
+                else if(bullets[i][1] > gameScreen.clientHeight){
+                    bullets[i][2] = 360 - bullets[i][2];
+                    console.log("bounce up");
+                }
+                else if(bullets[i][1] < 0){
+                    bullets[i][2] = 360 - bullets[i][2];
+                    console.log("bounce down");
+                }
+                bullets[i][3]--;
             }
             else{
-                bullets = bullets.slice(0, i).concat(bullets.slice(i+1));
+                if(bullets.length == 1){
+                    bullets = [];
+                }
+                else{
+                    bullets = bullets.slice(0, i).concat(bullets.slice(i+1));
+                }
             }
+            
             
         }
     }
@@ -338,13 +361,17 @@ function drawGUI(){
 
 function goToEndScreen(){
     ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
-    if(!p1Alive){
+    if(!p1Alive && p2Alive){
         ctx.font = "50px Arial";
         ctx.fillText("Red Hit", 400, 300);
     }
-    if(!p2Alive){
+    else if(!p2Alive && p1Alive){
         ctx.font = "50px Arial";
         ctx.fillText("Green Hit", 400, 300);
+    }
+    else{
+        ctx.font = "50px Arial";
+        ctx.fillText("Draw", 400, 300);
     }
 }
 
