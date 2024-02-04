@@ -11,11 +11,12 @@ ball = {
     pos: [490, 290],
     width: 20,
     speed: 7,
+    regS: 7,
     ds: .001,
     color: "gray",
-    rad: 1,
-    right: -1,
-    up: 1
+    rad: Math.random()*2*Math.PI,
+    right: 1,
+    up: 1,
 };
 
 p1 = {
@@ -67,6 +68,7 @@ function GameLoop(){
     MoveBall();
 
     ball.speed += ball.ds;
+    ball.regS += ball.ds;
 }
 
 function Rect(color, x, y, width, height=null){
@@ -93,7 +95,7 @@ function RectangleCollider(x1, y1, w1, x2, y2, w2){
 
 function MoveBall(){
 
-    ball.pos[0] += ball.right*ball.speed*Math.cos(ball.rad);
+    ball.pos[0] += ball.speed*Math.cos(ball.rad);
     ball.pos[1] += ball.up*ball.speed*Math.sin(ball.rad);
 
     if(ball.pos[0] < 0) ball.pos[0] = 0;
@@ -114,10 +116,35 @@ function BallCollisions(){
 
     // Paddles
     if(RectangleCollider(p1.pos[0]-60, p1.pos[1], 80, ball.pos[0], ball.pos[1], ball.width)){
-        ball.right *= -1;
+        // Distance ball center is from paddle center on collision
+        var n = ((p1.pos[1]+p1.height/2)-(ball.pos[1]+ball.width/2))/(p1.height/2+ball.width/2);
+        
+        if(Math.abs(n) > 0.5) ball.speed *= .5+Math.abs(n);
+        else ball.speed = ball.regS;
+
+        if(n>0.8) n = 0.8;
+        else if(n < -0.8) n = -0.8;
+
+        n = -n*Math.PI/2;
+        ball.up = 1;
+
+        ball.rad = n;
     }
     else if(RectangleCollider(p2.pos[0], p2.pos[1], 80, ball.pos[0], ball.pos[1], ball.width)){
-        ball.right *= -1;
+        // Distance ball center is from paddle center on collision
+        var n = ((p2.pos[1]+p2.height/2)-(ball.pos[1]+ball.width/2))/(p2.height/2+ball.width/2);
+        
+        if(Math.abs(n) > 0.5) ball.speed *= .5+Math.abs(n);
+        else ball.speed = ball.regS;
+        
+        if(n>0.8) n = 0.8;
+        else if(n < -0.8) n = -0.8;
+        
+        n = Math.PI+n*Math.PI/2;
+
+        ball.up = 1;
+
+        ball.rad = n;
     }
 }
 
