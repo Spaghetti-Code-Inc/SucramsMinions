@@ -1,3 +1,10 @@
+//TODO
+// (1) Add rotational momentum? would help with coming out of drift smoother
+// (2) Make map
+// (3) Make goal of the game, make game winnable
+
+
+
 var gameScreen = document.getElementById("gameScreen");
 var ctx = gameScreen.getContext('2d');
 
@@ -17,7 +24,9 @@ function init() {
     p1CanGo = [true, true];          //variable for if space in front and behind is clear    [front clear, back clear]
     p1TimePressed = 0;          //variable for rotation acceleration to increase aim potential
     p1drift = false;
+    p1InDrift = false;
     p1Speed = 0;
+    
 
     p2rightPressed = false;
     p2leftPressed = false;
@@ -28,7 +37,7 @@ function init() {
     p2drift = false;
     p2Speed = 0;
     //setting vars
-    rotateSpeed = 3;
+    rotateSpeed = 1;
     movementSpeed = 8;
     
 
@@ -76,6 +85,7 @@ function keyDownHandler(e){		//handles all keys when pressed down
      if(e.key =="m"){
         p1DriftAngle = p1Angle;
         p1drift = true;
+        p1InDrift = true;
      }
      if(e.key =="v"){
         p2drift = true;
@@ -87,10 +97,18 @@ function keyUpHandler(e){		//handles all keys when unpressed
 	if(e.key == "ArrowRight"){
 		p1rightPressed = false;
         p1TimePressed = 0;
+        if(!p1drift){
+            p1InDrift = false;
+            
+        }
 	}//end of if stm
     else if(e.key == "ArrowLeft"){
-            p1leftPressed = false;
-            p1TimePressed = 0;
+        p1leftPressed = false;
+        p1TimePressed = 0;
+        if(!p1drift){
+            p1InDrift = false;
+            
+        }
     }//end of else if stm
 
     if(e.key == "d"){
@@ -120,7 +138,8 @@ function keyUpHandler(e){		//handles all keys when unpressed
      //drifting
      if(e.key =="m"){
         p1drift = false;
-        p1Speed *=0.2;
+        
+        
      }
      if(e.key =="v"){
         p2drift = false;
@@ -177,15 +196,16 @@ function drawPlayers(p1Position, p2Position) {
     ctx.translate(-p2Position[0] - Math.cos(p2Angle*TO_RADIANS), -p2Position[1] + Math.sin(p2Angle*TO_RADIANS));
 }
 function deltaPlayer(){
+    
     if((p1CanGo[0] && p1Speed > 0) || (p1CanGo[1] && p1Speed < 0)){
-        if(!p1drift){
+        if(!p1InDrift){
             p1Pos[0]+= (Math.cos(p1Angle*TO_RADIANS)*p1Speed);
             p1Pos[1]+= (Math.sin(p1Angle*TO_RADIANS)*p1Speed);
         }
         else{
             p1Pos[0]+= (Math.cos(p1DriftAngle*TO_RADIANS)*p1Speed);
             p1Pos[1]+= (Math.sin(p1DriftAngle*TO_RADIANS)*p1Speed);
-            
+            p1DriftAngle = (p1DriftAngle*0.85) + (p1Angle*0.15);
         }
         
     }
@@ -207,13 +227,13 @@ function deltaPlayer(){
     }
     if(p1rightPressed){
         if(p1TimePressed < 2){
-            p1TimePressed+=0.2;
+            p1TimePressed+=0.05;
         }
         p1Angle+=rotateSpeed*p1TimePressed;
     }
     if(p1leftPressed){
         if(p1TimePressed < 2){
-            p1TimePressed+=0.2;
+            p1TimePressed+=0.05;
         }
         p1Angle-=rotateSpeed*p1TimePressed;
     }
@@ -263,10 +283,10 @@ function deltaPlayer(){
         }
     }
     if(p1drift){
-        rotateSpeed = 2;
+        rotateSpeed = 2.5;
     }
     else{
-        rotateSpeed = 3;
+        rotateSpeed = 1;
     }
 }
 
