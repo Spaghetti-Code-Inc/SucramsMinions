@@ -1,6 +1,3 @@
-const canvas = document.getElementById("gameScreen");
-const ctx = canvas.getContext("2d");
-
 const HEIGHT = 600;
 const WIDTH = 1000;
 
@@ -51,11 +48,6 @@ var keyDict = {
     23: "x",
     24: "y",
     25: "z",
-}
-
-window.onload = function(){
-    Init();
-    setInterval(GameLoop, 16.66);
 }
 
 function Init(){

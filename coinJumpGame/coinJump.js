@@ -1,5 +1,4 @@
-var gameScreen = document.getElementById("gameScreen");
-var ctx = gameScreen.getContext('2d');
+
 
 
 function init() {
@@ -57,8 +56,6 @@ function init() {
     coins = [];
 
     generateCoins();
-
-    gameLoop();
 }
 
 
@@ -427,8 +424,4 @@ function gameLoop() {
     drawCoin(coins[0][0], coins[0][1]);
     drawPlayer(p1PosX, p1PosY, p1width, p1Color);
     drawPlayer(p2PosX, p2PosY, p2width, p2Color);
-    requestAnimationFrame(gameLoop);
 }
-
-
-init();

@@ -1,83 +1,76 @@
-const canvas = document.getElementById("gameScreen");
-const ctx = canvas.getContext("2d");
-
-const HEIGHT = 600;
-const WIDTH = 1000;
-
-var STOP = false;
-var WINNER = "None";
-
-var dS = 7;
-// Change in speed when power up is collected
-var ddS = 1;
-
-var p1 = {
-    speed: dS,
-    pos: [100, 280],
-    width: 40,
-    acolor: "lime",
-    color: "green",
-    Up: false,
-    Left: false,
-    Down: false,
-    Right: false,
-    Fast: false,
-    FastMultiplier: 1.5,
-    last: "Right",
-    len: 20,
-    body: [[80, 280], [60, 280]]
-};
-
-var p2 = {
-    speed: dS,
-    pos: [860, 280],
-    width: 40,
-    acolor: "crimson",
-    color: "red",
-    Up: false,
-    Left: false,
-    Down: false,
-    Right: false,
-    Fast: false,
-    FastMultiplier: 1.5,
-    last: "Left",
-    len: 20,
-    body: [[880, 280], [900, 280]]
-};
-
-var food = [];
-var foodWidth = 20;
-var foodUp = 10;
-
-function GameLoop(){
-    if(STOP){
-        GoToEndingScreen();
-        return;
-    }
-    // Clear Screen
-    Rect("white", 0, 0, WIDTH, HEIGHT)
-
-    // Move Players
-    MovePlayer(p1);
-    MovePlayer(p2);
-
-    // Draw Players
-    DrawPlayer(p1);
-    DrawPlayer(p2);
-
-    // Detect Collisions
-    CollisionDetect();
-
-    // Spawn some food
-    FoodSpawner();
+function InitSnake(){
+    dS = 7;
+    // Change in speed when power up is collected
+    ddS = 1;
+    
+    p1 = {
+        speed: dS,
+        pos: [100, 280],
+        width: 40,
+        acolor: "lime",
+        color: "green",
+        Up: false,
+        Left: false,
+        Down: false,
+        Right: false,
+        Fast: false,
+        FastMultiplier: 1.5,
+        last: "Right",
+        len: 20,
+        body: [[80, 280], [60, 280]]
+    };
+    
+    p2 = {
+        speed: dS,
+        pos: [860, 280],
+        width: 40,
+        acolor: "crimson",
+        color: "red",
+        Up: false,
+        Left: false,
+        Down: false,
+        Right: false,
+        Fast: false,
+        FastMultiplier: 1.5,
+        last: "Left",
+        len: 20,
+        body: [[880, 280], [900, 280]]
+    };
+    
+    food = [];
+    foodWidth = 20;
+    foodUp = 10;
 }
 
-function Rect(color, x, y, width, height){
+
+
+function GameLoopSnake(){
+    if(STOP) return;
+
+    // Clear Screen
+    Rect_snake("white", 0, 0, WIDTH, HEIGHT)
+
+    // Move Players
+    MovePlayer_snake(p1);
+    MovePlayer_snake(p2);
+
+    // Draw Players
+    DrawPlayer_snake(p1);
+    DrawPlayer_snake(p2);
+
+    // Detect Collisions
+    CollisionDetect_snake();
+
+    // Spawn some food
+    FoodSpawner_snake();
+}
+
+function Rect_snake(color, x, y, width, height){
     ctx.fillStyle = color;
     ctx.fillRect(x, y, width, height);
 }
 
-function RectangleCollider(x1, y1, w1, x2, y2, w2){
+function RectangleCollider_snake(x1, y1, w1, x2, y2, w2){
     if (
         x1 < x2 + w2 &&
         x1 + w1 > x2 &&
@@ -92,8 +85,8 @@ function RectangleCollider(x1, y1, w1, x2, y2, w2){
     }
 }
 
-function GoToEndingScreen(){
-    Rect("white", 0, 0, WIDTH, HEIGHT);
+function GoToEndingScreen_snake(){
+    Rect_snake("white", 0, 0, WIDTH, HEIGHT);
     
     ctx.fillStyle = "black";
     ctx.font = "30px Arial";
@@ -112,10 +105,10 @@ function GoToEndingScreen(){
     // Wait until space bar is pressed to move on to the next game
 }
 
-function CollisionDetect(){
+function CollisionDetect_snake(){
 
    // Heads collide
-   if(RectangleCollider(p1.pos[0], p1.pos[1], p1.width, p2.pos[0], p2.pos[1], p2.width)){
+   if(RectangleCollider_snake(p1.pos[0], p1.pos[1], p1.width, p2.pos[0], p2.pos[1], p2.width)){
         STOP = true;
 
         if(p1.len > p2.len){
@@ -134,9 +127,9 @@ function CollisionDetect(){
     // P1
     try{
         for(i = 0; i < p2.len; i++){
-            if(RectangleCollider(p1.pos[0], p1.pos[1], p1.width, p2.body[i][0], p2.body[i][1], p2.width)){
-                console.log("Player 2 wins!");
-                WINNER = "p2";
+            if(RectangleCollider_snake(p1.pos[0], p1.pos[1], p1.width, p2.body[i][0], p2.body[i][1], p2.width)){
+                removeEventListener("keyup", keyUpHandler_snake);
+                removeEventListener("keydown", keyDownHandler_snake);
                 STOP = true;
                 return;
             }
@@ -145,9 +138,9 @@ function CollisionDetect(){
     // P2
     try{
         for(i = 0; i < p1.len; i++){
-            if(RectangleCollider(p2.pos[0], p2.pos[1], p2.width, p1.body[i][0], p1.body[i][1], p1.width)){
-                console.log("Player 1 wins!");
-                WINNER = "p1";
+            if(RectangleCollider_snake(p2.pos[0], p2.pos[1], p2.width, p1.body[i][0], p1.body[i][1], p1.width)){
+                removeEventListener("keyup", keyUpHandler_snake);
+                removeEventListener("keydown", keyDownHandler_snake);
                 STOP = true;
                 return;
             }
@@ -155,13 +148,13 @@ function CollisionDetect(){
     } catch {}
 }
 
-function DrawPlayer(p){
+function DrawPlayer_snake(p){
     try{
         // Always striped color
         for(i = 0; i < p.len; i++){
                 
-            if(i%4 <= 1) Rect(p.acolor, p.body[i][0], p.body[i][1], p.width, p.width);
-            else Rect(p.color, p.body[i][0], p.body[i][1], p.width, p.width);
+            if(i%4 <= 1) Rect_snake(p.acolor, p.body[i][0], p.body[i][1], p.width, p.width);
+            else Rect_snake(p.color, p.body[i][0], p.body[i][1], p.width, p.width);
 
         }
         // SWITCH Into switching color mode for FAST
@@ -183,10 +176,10 @@ function DrawPlayer(p){
 
     ctx.strokeStyle = "black";
     ctx.strokeRect(p.pos[0], p.pos[1], p.width, p.width);
-    Rect(p.color, p.pos[0], p.pos[1], p.width, p.width);
+    Rect_snake(p.color, p.pos[0], p.pos[1], p.width, p.width);
 }
 
-function MovePlayer(p){
+function MovePlayer_snake(p){
 
     var move = 0;
     if(p.Fast && p.len > 8){
@@ -255,7 +248,7 @@ function MovePlayer(p){
     // if(p.pos[1]+p.width/2 < 0) p.pos[1] += HEIGHT-p.width/2;
 }
 
-function FoodSpawner(){
+function FoodSpawner_snake(){
     var num = Math.random();
     if(num < .01){
         var x = Math.random()*(WIDTH-20);
@@ -264,7 +257,7 @@ function FoodSpawner(){
         var place = true;
         try {
             for(i = 0; i < p2.len; i++){
-                if(RectangleCollider(x, y, 20, p2.body[i][0], p2.body[i][1], p2.width)){
+                if(RectangleCollider_snake(x, y, 20, p2.body[i][0], p2.body[i][1], p2.width)){
                     place = false;
                 }
             }
@@ -272,7 +265,7 @@ function FoodSpawner(){
 
         try {
             for(i = 0; i < p1.len; i++){
-                if(RectangleCollider(x, y, 20, p1.body[i][0], p1.body[i][1], p1.width)){
+                if(RectangleCollider_snake(x, y, 20, p1.body[i][0], p1.body[i][1], p1.width)){
                     place = false;
                 }
             }
@@ -287,13 +280,13 @@ function FoodSpawner(){
     var rid = -1;
     for(i = 0; i < food.length; i++){
 
-        Rect("gray", food[i][0], food[i][1], foodWidth, foodWidth);
+        Rect_snake("gray", food[i][0], food[i][1], foodWidth, foodWidth);
         
-        if(RectangleCollider(food[i][0], food[i][1], foodWidth, p1.pos[0], p1.pos[1], p1.width)){
+        if(RectangleCollider_snake(food[i][0], food[i][1], foodWidth, p1.pos[0], p1.pos[1], p1.width)){
             rid = i;
             p1.len += foodUp;
         }
-        if(RectangleCollider(food[i][0], food[i][1], foodWidth, p2.pos[0], p2.pos[1], p2.width)){
+        if(RectangleCollider_snake(food[i][0], food[i][1], foodWidth, p2.pos[0], p2.pos[1], p2.width)){
             rid = i;
             p2.len += foodUp;
         }
@@ -303,14 +296,7 @@ function FoodSpawner(){
 
 }
 
-window.onload = function(){
-    setInterval(GameLoop, 16.66);
-}
-
-document.addEventListener("keydown", keyDownHandler, false);
-document.addEventListener("keyup", keyUpHandler, false);
-
-function keyDownHandler(e){
+function keyDownHandler_snake(e){
     switch (e.keyCode) {
         case 87: p1.Up = true; break;
         case 65: p1.Left = true; break;
@@ -326,7 +312,7 @@ function keyDownHandler(e){
     }
 }
 
-function keyUpHandler(e){
+function keyUpHandler_snake(e){
 
 
     if(e.keyCode == 87){

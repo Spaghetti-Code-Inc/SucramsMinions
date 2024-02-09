@@ -3,11 +3,6 @@
 // (2) Make map
 // (3) Make goal of the game, make game winnable
 
-
-
-var gameScreen = document.getElementById("gameScreen");
-var ctx = gameScreen.getContext('2d');
-
 const TO_RADIANS = Math.PI / 180;
 const TO_DEGREES = 180 / Math.PI;
 function init() {
@@ -43,10 +38,6 @@ function init() {
     p1movementSpeed = 8;
     p2rotateSpeed = 1;
     p2movementSpeed = 8;
-    
-
-
-    gameLoop();
 }
 
 document.addEventListener("keydown", keyDownHandler, false);
@@ -424,10 +415,6 @@ function gameLoop() {
     collisionDetect();
     deltaPlayer();
     drawPlayers(p1Pos, p2Pos);
-    drawGUI();
-    requestAnimationFrame(gameLoop);
-    
+    drawGUI();    
 }
-
-init();
 
