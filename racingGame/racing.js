@@ -26,6 +26,7 @@ function init() {
     p1drift = false;
     p1InDrift = false;
     p1Speed = 0;
+    p1Alive = true;
     
 
     p2rightPressed = false;
@@ -37,6 +38,11 @@ function init() {
     p2drift = false;
     p2InDrift = false
     p2Speed = 0;
+    p2Alive = true;
+
+    //other vars
+    explosion = new Image(500, 292);
+    explosion.src = 'Assets\\explosionSpriteSheet.png';
 
     //setting vars
     p1rotateSpeed = 1;
@@ -152,53 +158,80 @@ function keyUpHandler(e){		//handles all keys when unpressed
 }//end of function keyUpHandler()
 
 function drawPlayers(p1Position, p2Position) {
+    //explosion image is 500 pixels wide, times 5 frames; 292 pixels height, times 3 frames
+    collumn = 0;
+    row = 0;
 
-    //move canvas to match player one rotation, draw, then revert
-    ctx.translate(p1Position[0] + Math.cos(p1Angle*TO_RADIANS), p1Position[1] - Math.sin(p1Angle*TO_RADIANS));
-    ctx.rotate(p1Angle * TO_RADIANS);
+    if(p1Alive){
+        //move canvas to match player one rotation, draw, then revert
+        ctx.translate(p1Position[0] + Math.cos(p1Angle*TO_RADIANS), p1Position[1] - Math.sin(p1Angle*TO_RADIANS));
+        ctx.rotate(p1Angle * TO_RADIANS);
 
-    ctx.fillStyle = 'red';
-    ctx.fillRect(-20, -15, 40, 30);
-    ctx.fillRect(20, -10, 30, 20);
-    ctx.beginPath();
-    ctx.arc(0, 0, 10, 0, 360);
-    ctx.stroke();
-    ctx.fillStyle = 'black';
-    ctx.fill();
-    ctx.closePath();
+        ctx.fillStyle = 'red';
+        ctx.fillRect(-20, -15, 40, 30);
+        ctx.fillRect(20, -10, 30, 20);
+        ctx.beginPath();
+        ctx.arc(0, 0, 10, 0, 360);
+        ctx.stroke();
+        ctx.fillStyle = 'black';
+        ctx.fill();
+        ctx.closePath();
+        
+        //wheels
+        ctx.fillStyle = 'black';
+        ctx.fillRect(30, -15, 15, 5);
+        ctx.fillRect(30, 10, 15, 5);
+        ctx.fillRect(-15, -20, 15, 5);
+        ctx.fillRect(-15, 15, 15, 5);
+
+        ctx.rotate(-p1Angle * TO_RADIANS);
+        ctx.translate(-p1Position[0] - Math.cos(p1Angle*TO_RADIANS), -p1Position[1] + Math.sin(p1Angle*TO_RADIANS));
+    }
+    else{
+        ctx.drawImage(explosion, p1Position[0], p1Position[1], 100, 100);
+    }
     
-    //wheels
-    ctx.fillStyle = 'black';
-    ctx.fillRect(30, -15, 15, 5);
-    ctx.fillRect(30, 10, 15, 5);
-    ctx.fillRect(-15, -20, 15, 5);
-    ctx.fillRect(-15, 15, 15, 5);
+    if(p2Alive){
+        //move canvas to match player two rotation, draw, then revert
+        ctx.translate(p2Position[0] + Math.cos(p2Angle*TO_RADIANS), p2Position[1] - Math.sin(p2Angle*TO_RADIANS));
+        ctx.rotate(p2Angle * TO_RADIANS);
 
-    ctx.rotate(-p1Angle * TO_RADIANS);
-    ctx.translate(-p1Position[0] - Math.cos(p1Angle*TO_RADIANS), -p1Position[1] + Math.sin(p1Angle*TO_RADIANS));
+        ctx.fillStyle = 'green';
+        ctx.fillRect(-20, -15, 40, 30);
+        ctx.fillRect(20, -10, 30, 20);
+        ctx.beginPath();
+        ctx.arc(0, 0, 10, 0, 360);
+        ctx.stroke();
+        ctx.fillStyle = 'black';
+        ctx.fill();
+        ctx.closePath();
 
-    //move canvas to match player two rotation, draw, then revert
-    ctx.translate(p2Position[0] + Math.cos(p2Angle*TO_RADIANS), p2Position[1] - Math.sin(p2Angle*TO_RADIANS));
-    ctx.rotate(p2Angle * TO_RADIANS);
+        ctx.fillStyle = 'black';
+        ctx.fillRect(30, -15, 15, 5);
+        ctx.fillRect(30, 10, 15, 5);
+        ctx.fillRect(-15, -20, 15, 5);
+        ctx.fillRect(-15, 15, 15, 5);
 
-    ctx.fillStyle = 'green';
-    ctx.fillRect(-20, -15, 40, 30);
-    ctx.fillRect(20, -10, 30, 20);
-    ctx.beginPath();
-    ctx.arc(0, 0, 10, 0, 360);
-    ctx.stroke();
-    ctx.fillStyle = 'black';
-    ctx.fill();
-    ctx.closePath();
+        ctx.rotate(-p2Angle * TO_RADIANS);
+        ctx.translate(-p2Position[0] - Math.cos(p2Angle*TO_RADIANS), -p2Position[1] + Math.sin(p2Angle*TO_RADIANS));
+    }
+    else{
+        ctx.drawImage(explosion, 100*collumn, 98*row, 100, 98, p2Position[0] - 50, p2Position[1] - 50, 100, 100);
+        if(collumn < 4){
+            collumn++;
+            console.log(collumn);
+        }
+        else{
+            collumn = 0;
+            if(row < 2){
+                row++;
+            }
+        }
+        
+    }
 
-    ctx.fillStyle = 'black';
-    ctx.fillRect(30, -15, 15, 5);
-    ctx.fillRect(30, 10, 15, 5);
-    ctx.fillRect(-15, -20, 15, 5);
-    ctx.fillRect(-15, 15, 15, 5);
 
-    ctx.rotate(-p2Angle * TO_RADIANS);
-    ctx.translate(-p2Position[0] - Math.cos(p2Angle*TO_RADIANS), -p2Position[1] + Math.sin(p2Angle*TO_RADIANS));
+    
 }
 function deltaPlayer(){
     
@@ -357,13 +390,27 @@ function drawTrack(){
         ctx.fillRect(1030, 230 + i*20, 20, 20);
         ctx.fillRect(1190, 230 + i*20, 20, 20);
     }
+    for(i=0; i<8; i+=2){
+        ctx.fillStyle = "white";
+        ctx.fillRect(1050 + i*20, 210, 20, 20);
+        ctx.fillStyle = "red";
+        ctx.fillRect(1070 + i*20, 210, 20, 20);
+        
+    }
     ctx.fillStyle = "white";
     ctx.fillRect(270, 500, 20, 20);
     ctx.fillRect(220, 210, 20, 20);
     ctx.fillRect(260, 210, 20, 20);
+    ctx.fillRect(1190, 470, 20, 20);
+    ctx.fillRect(1150, 485, 20, 20);
     ctx.fillStyle = "red";
     ctx.fillRect(240, 210, 20, 20);
-    ctx.fillRect(1130, 500, 20, 20);
+    ctx.fillRect(1140, 500, 20, 20);
+    ctx.fillRect(1190, 450, 20, 20);
+    ctx.fillRect(1170, 475, 20, 20);
+    ctx.fillRect(1010, 435, 20, 20);
+    ctx.fillRect(970, 440, 20, 20);
+    ctx.fillRect(945, 460, 20, 20);
     
 
 }
@@ -377,6 +424,7 @@ function collisionDetect(){
     //Use two squares? ahhhh prolly doesnt matter anyway
     if(nextPosF1[0] + (20+Math.cos(p1Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosF1[0] - (20-Math.cos(p1Angle*TO_RADIANS)) < 0 || nextPosF1[1] + (20+Math.sin(p1Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosF1[1] - (20-Math.sin(p1Angle*TO_RADIANS)) < 0){
         p1CanGo[0] = false;
+        p1Alive = false;
     }
     else{
         p1CanGo[0] = true;
@@ -385,6 +433,7 @@ function collisionDetect(){
     nextPosB1 = [p1Pos[0] - Math.cos(p1Angle*TO_RADIANS)*p1movementSpeed, p1Pos[1] - Math.sin(p1Angle*TO_RADIANS)*p1movementSpeed];
     if(nextPosB1[0] + (17+Math.cos(p1Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosB1[0] - (17-Math.cos(p1Angle*TO_RADIANS)) < 0 || nextPosB1[1] + (17+Math.sin(p1Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosB1[1] - (17-Math.sin(p1Angle*TO_RADIANS)) < 0){
         p1CanGo[1] = false;
+        p1Alive = false;
     }
     else{
         p1CanGo[1] = true;
@@ -394,6 +443,7 @@ function collisionDetect(){
     nextPosF2 = [p2Pos[0] + Math.cos(p2Angle*TO_RADIANS)*p2movementSpeed, p2Pos[1] + Math.sin(p2Angle*TO_RADIANS)*p2movementSpeed];
     if(nextPosF2[0] + (25+Math.cos(p2Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosF2[0] - (25-Math.cos(p2Angle*TO_RADIANS)) < 0 || nextPosF2[1] + (25+Math.sin(p2Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosF2[1] - (25-Math.sin(p2Angle*TO_RADIANS)) < 0){
         p2CanGo[0] = false;
+        p2Alive = false;
     }
     else{
         p2CanGo[0] = true;
@@ -402,6 +452,7 @@ function collisionDetect(){
     nextPosB2 = [p2Pos[0] - Math.cos(p2Angle*TO_RADIANS)*p2movementSpeed, p2Pos[1] - Math.sin(p2Angle*TO_RADIANS)*p2movementSpeed];
     if(nextPosB2[0] + (25+Math.cos(p2Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosB2[0] - (25-Math.cos(p2Angle*TO_RADIANS)) < 0 || nextPosB2[1] + (25+Math.sin(p2Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosB2[1] - (25-Math.sin(p2Angle*TO_RADIANS)) < 0){
         p2CanGo[1] = false;
+        p2Alive = false;
     }
     else{
         p2CanGo[1] = true;

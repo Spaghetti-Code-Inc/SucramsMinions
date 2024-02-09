@@ -9,7 +9,7 @@ function init() {
     p1width = 50;
     p1Color = 'red';
     p1Sprite = new Image(p1width, p1width);
-    p1Sprite.src = 'Assets\\redGuy2.png';
+    p1Sprite.src = 'Assets\\redGuy4.png';
     p1leftPressed = false;
     p1rightPressed = false;
     //jump vars
@@ -55,6 +55,7 @@ function init() {
     particleAccelerator = false;
 
     coins = [];
+    
 
     generateCoins();
 
@@ -393,23 +394,25 @@ function drawPlayer (posX, posY, width, color) {
 }
 
 function drawBackground() {
-    
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = 'lightblue';
+    ctx.fillRect(0, 0, gameScreen.width, gameScreen.height);
+    ctx.fillStyle = 'green';
     ctx.fillRect(0, 550, 1200, 50)
+    ctx.fillStyle = "black";
     ctx.font = "20px Arial";
     ctx.fillText("Green: " + p2Coins, 10, 50);
     ctx.fillText("Red: " + p1Coins, 900, 50);
 }
 
 function checkCoinCollision() {
-    if((p1PosX > coins[0][0] && p1PosX < coins[0][0] + 30) || (p1PosX + p1width > coins[0][0] && p1PosX + p1width < coins[0][0] + 30)){
-        if((p1PosY > coins[0][1] && p1PosY < coins[0][1] + 30) || (p1PosY + p1width > coins[0][1] && p1PosY + p1width < coins[0][1] + 30)){
+    if((p1PosX > coins[0][0] && p1PosX < coins[0][0] + 30) || (p1PosX + p1width > coins[0][0] && p1PosX + p1width < coins[0][0] + 30) || (p1PosX + p1width/2 > coins[0][0] && p1PosX + p1width/2 < coins[0][0] + 30)){
+        if((p1PosY > coins[0][1] && p1PosY < coins[0][1] + 30) || (p1PosY + p1width > coins[0][1] && p1PosY + p1width < coins[0][1] + 30) || (p1PosY + p1width/2 > coins[0][1] && p1PosY + p1width/2 < coins[0][1] + 30)){
             generateCoins();
             p1Coins++;
         }
     }
-    if((p2PosX > coins[0][0] && p2PosX < coins[0][0] + 30) || (p2PosX + p2width > coins[0][0] && p2PosX + p2width < coins[0][0] + 30)){
-        if((p2PosY >  coins[0][1] && p2PosY < coins[0][1] + 30) || (p2PosY + p2width > coins[0][1] && p2PosY + p2width < coins[0][1] + 30)){
+    if((p2PosX > coins[0][0] && p2PosX < coins[0][0] + 30) || (p2PosX + p2width > coins[0][0] && p2PosX + p2width < coins[0][0] + 30) || (p2PosX + p2width/2 > coins[0][0] && p2PosX + p2width/2 < coins[0][0] + 30)){
+        if((p2PosY >  coins[0][1] && p2PosY < coins[0][1] + 30) || (p2PosY + p2width > coins[0][1] && p2PosY + p2width < coins[0][1] + 30) || (p2PosY + p2width/2 > coins[0][1] && p2PosY + p2width/2 < coins[0][1] + 30)){
             generateCoins();
             p2Coins++;
         }

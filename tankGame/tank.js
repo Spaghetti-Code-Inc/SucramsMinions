@@ -375,9 +375,15 @@ function goToEndScreen(){
     }
 }
 
+function drawBackground(){
+    ctx.fillStyle = "lightgrey";
+    ctx.fillRect(0, 0, gameScreen.clientWidth, gameScreen.height);
+}
+
 function gameLoop() {
     if(p1Alive && p2Alive){
         ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
+        drawBackground();
         collisionDetect();
         deltaPlayer();
         bulletHander();
