@@ -45,8 +45,7 @@ function init() {
 
     //scene vars
     floorY = 550;
-    background = new Image(p1width, p1width);
-    background.src = 'Assets\\monalisa.jpg';
+    
     //world physics vars
     drag = 0.2;
     acceleration = 0.08;
@@ -394,7 +393,7 @@ function drawPlayer (posX, posY, width, color) {
 }
 
 function drawBackground() {
-    ctx.drawImage(background, 0, 0, gameScreen.width, gameScreen.height);
+    
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 550, 1200, 50)
     ctx.font = "20px Arial";

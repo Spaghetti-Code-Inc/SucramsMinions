@@ -12,9 +12,9 @@ const TO_RADIANS = Math.PI / 180;
 const TO_DEGREES = 180 / Math.PI;
 function init() {
     //pos and orientation vars
-    p1Pos = [800, 300];
-    p2Pos = [200, 300];
-    p1Angle = 180;
+    p1Pos = [200, 630];
+    p2Pos = [200, 570];
+    p1Angle = 0;
     p2Angle = 0;
     //movement vars
     p1rightPressed = false;
@@ -35,10 +35,14 @@ function init() {
     p2CanGo = [true, true];         //variable for if space in front and behind is clear    [front clear, back clear]
     p2TimePressed = 0;
     p2drift = false;
+    p2InDrift = false
     p2Speed = 0;
+
     //setting vars
-    rotateSpeed = 1;
-    movementSpeed = 8;
+    p1rotateSpeed = 1;
+    p1movementSpeed = 8;
+    p2rotateSpeed = 1;
+    p2movementSpeed = 8;
     
 
 
@@ -86,6 +90,7 @@ function keyDownHandler(e){		//handles all keys when pressed down
         p1DriftAngle = p1Angle;
         p1drift = true;
         p1InDrift = true;
+        
      }
      if(e.key =="v"){
         p2drift = true;
@@ -211,17 +216,25 @@ function deltaPlayer(){
     }
     
     if((p2CanGo[0] && p2Speed > 0) || (p2CanGo[1] && p2Speed < 0)){
-        p2Pos[0]+= (Math.cos(p2Angle*TO_RADIANS)*p2Speed);
-        p2Pos[1]+= (Math.sin(p2Angle*TO_RADIANS)*p2Speed);
+        if(!p2InDrift){
+            p2Pos[0]+= (Math.cos(p2Angle*TO_RADIANS)*p2Speed);
+            p2Pos[1]+= (Math.sin(p2Angle*TO_RADIANS)*p2Speed);
+        }
+        else{
+            p2Pos[0]+= (Math.cos(p2DriftAngle*TO_RADIANS)*p2Speed);
+            p2Pos[1]+= (Math.sin(p2DriftAngle*TO_RADIANS)*p2Speed);
+            p2DriftAngle = (p2DriftAngle*0.85) + (p2Angle*0.15);
+        }
+        
     }
 
     if(p1upPressed && p1CanGo[0]){
-        if(p1Speed < movementSpeed){
+        if(p1Speed < p1movementSpeed){
             p1Speed += 0.2;
         }
     }
     if(p1downPressed && p1CanGo[1]){
-        if(p1Speed > -movementSpeed){
+        if(p1Speed > -(p1movementSpeed/2)){
             p1Speed -= 0.2;
         }
     }
@@ -229,81 +242,148 @@ function deltaPlayer(){
         if(p1TimePressed < 2){
             p1TimePressed+=0.05;
         }
-        p1Angle+=rotateSpeed*p1TimePressed;
+        p1Angle+=p1rotateSpeed*p1TimePressed;
     }
     if(p1leftPressed){
         if(p1TimePressed < 2){
             p1TimePressed+=0.05;
         }
-        p1Angle-=rotateSpeed*p1TimePressed;
+        p1Angle-=p1rotateSpeed*p1TimePressed;
     }
     if(p2upPressed && p2CanGo[0]){
-        if(p2Speed < movementSpeed){
+        if(p2Speed < p2movementSpeed){
             p2Speed += 0.2;
         }
     }
     if(p2downPressed && p2CanGo[1]){
-        if(p2Speed > -movementSpeed){
+        if(p2Speed > -(p2movementSpeed/2)){
             p2Speed -= 0.2;
         }
     }
     if(p2rightPressed){
         if(p2TimePressed < 2){
-            p2TimePressed+=0.2;
+            p2TimePressed+=0.05;
         }
-        p2Angle+=rotateSpeed*p2TimePressed;
+        p2Angle+=p2rotateSpeed*p2TimePressed;
     }
     if(p2leftPressed){
         if(p2TimePressed < 2){
-            p2TimePressed+=0.2;
+            p2TimePressed+=0.05;
         }
-        p2Angle-=rotateSpeed*p2TimePressed;
+        p2Angle-=p2rotateSpeed*p2TimePressed;
     }
 
     if(!p1upPressed && !p1downPressed){
-        if(p1Speed > 0.5 && p1Speed != 0){
-            p1Speed -= 0.2;
+        if(p1Speed > 0.3 && p1Speed != 0){
+            p1Speed -= 0.05;
         }
-        else if(p1Speed < -0.5 && p1Speed != 0){
-            p1Speed+=0.2;
+        else if(p1Speed < -0.3 && p1Speed != 0){
+            p1Speed+=0.05;
         }
         else{
             p1Speed = 0;
         }
     }
     if(!p2upPressed && !p2downPressed){
-        if(p2Speed > 0.5 && p2Speed != 0){
-            p2Speed -= 0.2;
+        if(p2Speed > 0.3 && p2Speed != 0){
+            p2Speed -= 0.05;
         }
-        else if(p2Speed < -0.5 && p2Speed != 0){
-            p2Speed+=0.2;
+        else if(p2Speed < -0.3 && p2Speed != 0){
+            p2Speed+=0.05;
         }
         else{
             p2Speed = 0;
         }
     }
     if(p1drift){
-        rotateSpeed = 2.5;
+        p1rotateSpeed = 2.5;
     }
     else{
-        rotateSpeed = 1;
+        p1rotateSpeed = 1;
     }
+    if(p2drift){
+        p2rotateSpeed = 2.5;
+    }
+    else{
+        p2rotateSpeed = 1;
+    }
+}
+
+function drawTrack(){
+    //about to be some very laborious code
+    //main grass color
+    ctx.fillStyle = '#96be25';
+    ctx.fillRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
+
+    //road layout ahhh
+    ctx.fillStyle = '#8a9395';
+    ctx.fillRect(30, 540, 1300, 180);
+    ctx.fillRect(1200, 40, 180, 600);
+    ctx.fillRect(900, 30, 300, 180);
+    ctx.fillRect(850, 40, 180, 400);
+    ctx.fillRect(450, 300, 500, 180);
+    ctx.fillRect(20, 40, 200, 500);
+    ctx.fillRect(30, 30, 380, 180);
+    ctx.fillRect(300, 50, 200, 400);
+    ctx.fillRect(220, 490, 50, 50);
+    ctx.fillRect(1150, 490, 50, 50);
+    ctx.fillRect(800, 260, 50, 50);
+    ctx.fillRect(500, 260, 50, 50);
+    for(i = 0; i < 44; i+=2){
+        ctx.fillStyle = "red";
+        ctx.fillRect(270 + i*20, 520, 20, 20);
+        ctx.fillStyle = "white";
+        ctx.fillRect(290 + i*20, 520, 20, 20);
+    }
+    for(i = 0; i < 26; i+=2){
+        ctx.fillStyle = "red";
+        ctx.fillRect(430 + i*20, 480, 20, 20);
+        ctx.fillStyle = "white";
+        ctx.fillRect(450 + i*20, 480, 20, 20);
+    }
+    for(i = 0; i < 12; i+=2){
+        ctx.fillStyle = "red";
+        ctx.fillRect(280, 210 + i*20, 20, 20);
+        ctx.fillRect(200, 210 + i*20, 20, 20);
+        ctx.fillStyle = "white";
+        ctx.fillRect(280, 230 + i*20, 20, 20);
+        ctx.fillRect(200, 230 + i*20, 20, 20);
+    }
+    for(i = 0; i < 12; i+=2){
+        ctx.fillStyle = "red";
+        ctx.fillRect(1030, 210 + i*20, 20, 20);
+        ctx.fillRect(1190, 210 + i*20, 20, 20);
+        ctx.fillStyle = "white";
+        ctx.fillRect(1030, 230 + i*20, 20, 20);
+        ctx.fillRect(1190, 230 + i*20, 20, 20);
+    }
+    ctx.fillStyle = "white";
+    ctx.fillRect(270, 500, 20, 20);
+    ctx.fillRect(220, 210, 20, 20);
+    ctx.fillRect(260, 210, 20, 20);
+    ctx.fillStyle = "red";
+    ctx.fillRect(240, 210, 20, 20);
+    ctx.fillRect(1130, 500, 20, 20);
+    
+
 }
 
 
 
 function collisionDetect(){
     //player 1 border, so tank doesn't go off screen; forwards direction
-    nextPosF1 = [p1Pos[0] + Math.cos(p1Angle*TO_RADIANS)*movementSpeed, p1Pos[1] + Math.sin(p1Angle*TO_RADIANS)*movementSpeed];
-    if(nextPosF1[0] + (25+Math.cos(p1Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosF1[0] - (25-Math.cos(p1Angle*TO_RADIANS)) < 0 || nextPosF1[1] + (25+Math.sin(p1Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosF1[1] - (25-Math.sin(p1Angle*TO_RADIANS)) < 0){
+    
+    nextPosF1 = [p1Pos[0] + Math.cos(p1Angle*TO_RADIANS)*p1movementSpeed, p1Pos[1] + Math.sin(p1Angle*TO_RADIANS)*p1movementSpeed];
+    //Use two squares? ahhhh prolly doesnt matter anyway
+    if(nextPosF1[0] + (20+Math.cos(p1Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosF1[0] - (20-Math.cos(p1Angle*TO_RADIANS)) < 0 || nextPosF1[1] + (20+Math.sin(p1Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosF1[1] - (20-Math.sin(p1Angle*TO_RADIANS)) < 0){
         p1CanGo[0] = false;
     }
     else{
         p1CanGo[0] = true;
     }
     //backwards player 1
-    nextPosB1 = [p1Pos[0] - Math.cos(p1Angle*TO_RADIANS)*movementSpeed, p1Pos[1] - Math.sin(p1Angle*TO_RADIANS)*movementSpeed];
-    if(nextPosB1[0] + (25+Math.cos(p1Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosB1[0] - (25-Math.cos(p1Angle*TO_RADIANS)) < 0 || nextPosB1[1] + (25+Math.sin(p1Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosB1[1] - (25-Math.sin(p1Angle*TO_RADIANS)) < 0){
+    nextPosB1 = [p1Pos[0] - Math.cos(p1Angle*TO_RADIANS)*p1movementSpeed, p1Pos[1] - Math.sin(p1Angle*TO_RADIANS)*p1movementSpeed];
+    if(nextPosB1[0] + (17+Math.cos(p1Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosB1[0] - (17-Math.cos(p1Angle*TO_RADIANS)) < 0 || nextPosB1[1] + (17+Math.sin(p1Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosB1[1] - (17-Math.sin(p1Angle*TO_RADIANS)) < 0){
         p1CanGo[1] = false;
     }
     else{
@@ -311,7 +391,7 @@ function collisionDetect(){
     }
 
     //player 2 border, so tank doesn't go off screen
-    nextPosF2 = [p2Pos[0] + Math.cos(p2Angle*TO_RADIANS)*movementSpeed, p2Pos[1] + Math.sin(p2Angle*TO_RADIANS)*movementSpeed];
+    nextPosF2 = [p2Pos[0] + Math.cos(p2Angle*TO_RADIANS)*p2movementSpeed, p2Pos[1] + Math.sin(p2Angle*TO_RADIANS)*p2movementSpeed];
     if(nextPosF2[0] + (25+Math.cos(p2Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosF2[0] - (25-Math.cos(p2Angle*TO_RADIANS)) < 0 || nextPosF2[1] + (25+Math.sin(p2Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosF2[1] - (25-Math.sin(p2Angle*TO_RADIANS)) < 0){
         p2CanGo[0] = false;
     }
@@ -319,7 +399,7 @@ function collisionDetect(){
         p2CanGo[0] = true;
     }
     //backwards player 2
-    nextPosB2 = [p2Pos[0] - Math.cos(p2Angle*TO_RADIANS)*movementSpeed, p2Pos[1] - Math.sin(p2Angle*TO_RADIANS)*movementSpeed];
+    nextPosB2 = [p2Pos[0] - Math.cos(p2Angle*TO_RADIANS)*p2movementSpeed, p2Pos[1] - Math.sin(p2Angle*TO_RADIANS)*p2movementSpeed];
     if(nextPosB2[0] + (25+Math.cos(p2Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosB2[0] - (25-Math.cos(p2Angle*TO_RADIANS)) < 0 || nextPosB2[1] + (25+Math.sin(p2Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosB2[1] - (25-Math.sin(p2Angle*TO_RADIANS)) < 0){
         p2CanGo[1] = false;
     }
@@ -340,6 +420,7 @@ function drawGUI(){
 function gameLoop() {
     
     ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
+    drawTrack();
     collisionDetect();
     deltaPlayer();
     drawPlayers(p1Pos, p2Pos);
