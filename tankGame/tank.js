@@ -1,9 +1,6 @@
-var gameScreen = document.getElementById("gameScreen");
-var ctx = gameScreen.getContext('2d');
-
 const TO_RADIANS = Math.PI / 180;
 const TO_DEGREES = 180 / Math.PI;
-function init() {
+function InitTank() {
     //pos and orientation vars
     p1Pos = [800, 300];
     p2Pos = [200, 300];
@@ -39,17 +36,17 @@ function init() {
     p1BulletsLeft = numBullets;
     p2BulletsLeft = numBullets;
     numBulletBounces = 1;
+
+    //TODO NEED TO CLEAR THIS INTERVAL WHEN THE GAME IS OVER
+    window.onload = setInterval(reload_tank, 1000);
     
-
-
-    gameLoop();
 }
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
 //function for when user presses down key
-function keyDownHandler(e){		//handles all keys when pressed down
+function keyDownHandler_tank(e){		//handles all keys when pressed down
 	if(e.key == "ArrowRight"){
 		p1rightPressed = true;
 	}//end of if stm
@@ -91,7 +88,7 @@ function keyDownHandler(e){		//handles all keys when pressed down
 }//end of function keyDownHandler()
 
 //function to respond to when the arrow keys are up
-function keyUpHandler(e){		//handles all keys when unpressed
+function keyUpHandler_tank(e){		//handles all keys when unpressed
 	if(e.key == "ArrowRight"){
 		p1rightPressed = false;
         p1TimePressed = 0;
@@ -126,7 +123,7 @@ function keyUpHandler(e){		//handles all keys when unpressed
      }
 }//end of function keyUpHandler()
 
-function drawPlayers(p1Position, p2Position) {
+function drawPlayers_tank(p1Position, p2Position) {
 
     //move canvas to match player one rotation, draw, then revert
     ctx.translate(p1Position[0] + Math.cos(p1Angle*TO_RADIANS), p1Position[1] - Math.sin(p1Angle*TO_RADIANS));
@@ -159,7 +156,7 @@ function drawPlayers(p1Position, p2Position) {
     ctx.rotate(-p2Angle * TO_RADIANS);
     ctx.translate(-p2Position[0] - Math.cos(p2Angle*TO_RADIANS), -p2Position[1] + Math.sin(p2Angle*TO_RADIANS));
 }
-function deltaPlayer(){
+function deltaPlayer_tank(){
     if(p1upPressed && p1CanGo[0]){
         p1Pos[0]+= (Math.cos(p1Angle*TO_RADIANS)*movementSpeed);
         p1Pos[1]+= (Math.sin(p1Angle*TO_RADIANS)*movementSpeed);
@@ -202,7 +199,7 @@ function deltaPlayer(){
     }
 }
 
-function bulletHander(){
+function bulletHander_tank(){
     if(p1shotFired && p1BulletsLeft > 0){
         bullets.push([p1Pos[0] + 45 * Math.cos(p1Angle*TO_RADIANS), p1Pos[1] + 45 * Math.sin(p1Angle*TO_RADIANS), p1Angle, numBulletBounces]);
         p1BulletsLeft--;
@@ -215,8 +212,8 @@ function bulletHander(){
     }
 
     for (let i = 0; i < bullets.length; i++){
-        moveBullet(bullets[i])
-        drawBullet(bullets[i][0], bullets[i][1]);
+        moveBullet_tank(bullets[i])
+        drawBullet_tank(bullets[i][0], bullets[i][1]);
         if(bullets[i][0] > gameScreen.clientWidth || bullets[i][0] < 0 || bullets[i][1] > gameScreen.clientHeight || bullets[i][1] < 0){
             if(bullets[i][3] > 0){
                 if(bullets[i][0] > gameScreen.clientWidth){
@@ -252,17 +249,17 @@ function bulletHander(){
 
 }
 
-function moveBullet(bullet){
+function moveBullet_tank(bullet){
     bullet[0]+= (Math.cos(bullet[2]*TO_RADIANS)*bulletSpeed);
     bullet[1]+= (Math.sin(bullet[2]*TO_RADIANS)*bulletSpeed);
 }
 
-function drawBullet(bullX, bullY){
+function drawBullet_tank(bullX, bullY){
     ctx.fillStyle = "grey";
     ctx.fillRect(bullX, bullY, 5, 5);
 }
 
-function reload(){
+function reload_tank(){
     if(p1BulletsLeft < numBullets){
         p1Reload++;
     }
@@ -279,7 +276,7 @@ function reload(){
     }
 }
 
-function collisionDetect(){
+function collisionDetect_tank(){
     //player 1 border, so tank doesn't go off screen; forwards direction
     nextPosF1 = [p1Pos[0] + Math.cos(p1Angle*TO_RADIANS)*movementSpeed, p1Pos[1] + Math.sin(p1Angle*TO_RADIANS)*movementSpeed];
     if(nextPosF1[0] + (25+Math.cos(p1Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosF1[0] - (25-Math.cos(p1Angle*TO_RADIANS)) < 0 || nextPosF1[1] + (25+Math.sin(p1Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosF1[1] - (25-Math.sin(p1Angle*TO_RADIANS)) < 0){
@@ -320,6 +317,11 @@ function collisionDetect(){
         if(bullets[i][0] > p1Pos[0] - (25+Math.cos(p1Angle*TO_RADIANS)) && bullets[i][0] < p1Pos[0] + (25+Math.cos(p1Angle*TO_RADIANS))){
             if(bullets[i][1] > p1Pos[1] -  (25+Math.sin(p1Angle*TO_RADIANS)) && bullets[i][1] < p1Pos[1] +  (25+Math.sin(p1Angle*TO_RADIANS))){
                 p1Alive = false;
+
+                removeEventListener("keydown", keyDownHandler_tank);
+                removeEventListener("keyup", keyUpHandler_tank); 
+
+                STOP = true;
                 console.log("red hit");
             }
         }
@@ -327,13 +329,18 @@ function collisionDetect(){
         if(bullets[i][0] > p2Pos[0] - (25+Math.cos(p2Angle*TO_RADIANS)) && bullets[i][0] < p2Pos[0] + (25+Math.cos(p2Angle*TO_RADIANS))){
             if(bullets[i][1] > p2Pos[1] -  (25+Math.sin(p2Angle*TO_RADIANS)) && bullets[i][1] < p2Pos[1] +  (25+Math.sin(p2Angle*TO_RADIANS))){
                 p2Alive = false;
+
+                removeEventListener("keydown", keyDownHandler_tank);
+                removeEventListener("keyup", keyUpHandler_tank); 
+
+                STOP = true;
                 console.log("green hit");
             }
         }
     }
 }
 
-function drawGUI(){
+function drawGUI_tank(){
     ctx.font = "20px Arial";
     
     ctx.fillStyle= 'green';
@@ -359,7 +366,7 @@ function drawGUI(){
     }
 }
 
-function goToEndScreen(){
+function goToEndScreen_tank(){
     ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
     if(!p1Alive && p2Alive){
         ctx.font = "50px Arial";
@@ -399,3 +406,12 @@ function gameLoop() {
 init();
 
 window.onload = setInterval(reload, 1000);
+function GameLoopTank() {
+    if(STOP) return;
+    ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
+    collisionDetect_tank();
+    deltaPlayer_tank();
+    bulletHander_tank();
+    drawPlayers_tank(p1Pos, p2Pos);
+    drawGUI_tank();
+}
