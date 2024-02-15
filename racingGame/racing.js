@@ -168,102 +168,103 @@ function keyUpHandler(e){		//handles all keys when unpressed
 }//end of function keyUpHandler()
 
 function drawPlayers(p1Position, p2Position) {
-    //explosion image is 500 pixels wide, times 5 frames; 292 pixels height, times 3 frames
 
-    if(p1Alive){
-        //move canvas to match player one rotation, draw, then revert
-        ctx.translate(p1Position[0] + Math.cos(p1Angle*TO_RADIANS), p1Position[1] - Math.sin(p1Angle*TO_RADIANS));
-        ctx.rotate(p1Angle * TO_RADIANS);
+    if(potato){
+        //explosion image is 500 pixels wide, times 5 frames; 292 pixels height, times 3 frames
 
-        ctx.fillStyle = 'red';
-        ctx.fillRect(-20, -15, 40, 30);
-        ctx.fillRect(20, -10, 30, 20);
-        ctx.beginPath();
-        ctx.arc(0, 0, 10, 0, 360);
-        ctx.stroke();
-        ctx.fillStyle = 'black';
-        ctx.fill();
-        ctx.closePath();
-        
-        //wheels
-        ctx.fillStyle = 'black';
-        ctx.fillRect(30, -15, 15, 5);
-        ctx.fillRect(30, 10, 15, 5);
-        ctx.fillRect(-15, -20, 15, 5);
-        ctx.fillRect(-15, 15, 15, 5);
+        if(p1Alive){
+            //wmove canvas to match player one rotation, draw, then revert
+            ctx.translate(p1Position[0] + Math.cos(p1Angle*TO_RADIANS), p1Position[1] - Math.sin(p1Angle*TO_RADIANS));
+            ctx.rotate(p1Angle * TO_RADIANS);
 
-        ctx.rotate(-p1Angle * TO_RADIANS);
-        ctx.translate(-p1Position[0] - Math.cos(p1Angle*TO_RADIANS), -p1Position[1] + Math.sin(p1Angle*TO_RADIANS));
-    }
-    else{
-        if(display1){
-            ctx.drawImage(explosion, 100*collumn1, 96*row1, 100, 98, p1Position[0] - 50, p1Position[1] - 50, 100, 100);
-        }
-        if(collumn1 < 4){
-            collumn1++;
+            ctx.fillStyle = 'red';
+            ctx.fillRect(-20, -15, 40, 30);
+            ctx.fillRect(20, -10, 30, 20);
+            ctx.beginPath();
+            ctx.arc(0, 0, 10, 0, 360);
+            ctx.stroke();
+            ctx.fillStyle = 'black';
+            ctx.fill();
+            ctx.closePath();
+            
+            //wheels
+            ctx.fillStyle = 'black';
+            ctx.fillRect(30, -15, 15, 5);
+            ctx.fillRect(30, 10, 15, 5);
+            ctx.fillRect(-15, -20, 15, 5);
+            ctx.fillRect(-15, 15, 15, 5);
+
+            ctx.rotate(-p1Angle * TO_RADIANS);
+            ctx.translate(-p1Position[0] - Math.cos(p1Angle*TO_RADIANS), -p1Position[1] + Math.sin(p1Angle*TO_RADIANS));
         }
         else{
-            collumn1 = 0;
-            if(row1 < 2){
-                row1++;
+            if(display1){
+                ctx.drawImage(explosion, 100*collumn1, 96*row1, 100, 98, p1Position[0] - 50, p1Position[1] - 50, 100, 100);
             }
-        }
-        if(collumn1 == 4 && row1 == 2){
-            display1 = false;
-            potato = false;
-            sleep(500);
-            gameOver();
-        }
-    }
-    
-    if(p2Alive){
-        //move canvas to match player two rotation, draw, then revert
-        ctx.translate(p2Position[0] + Math.cos(p2Angle*TO_RADIANS), p2Position[1] - Math.sin(p2Angle*TO_RADIANS));
-        ctx.rotate(p2Angle * TO_RADIANS);
-
-        ctx.fillStyle = 'green';
-        ctx.fillRect(-20, -15, 40, 30);
-        ctx.fillRect(20, -10, 30, 20);
-        ctx.beginPath();
-        ctx.arc(0, 0, 10, 0, 360);
-        ctx.stroke();
-        ctx.fillStyle = 'black';
-        ctx.fill();
-        ctx.closePath();
-
-        ctx.fillStyle = 'black';
-        ctx.fillRect(30, -15, 15, 5);
-        ctx.fillRect(30, 10, 15, 5);
-        ctx.fillRect(-15, -20, 15, 5);
-        ctx.fillRect(-15, 15, 15, 5);
-
-        ctx.rotate(-p2Angle * TO_RADIANS);
-        ctx.translate(-p2Position[0] - Math.cos(p2Angle*TO_RADIANS), -p2Position[1] + Math.sin(p2Angle*TO_RADIANS));
-    }
-    else{
-        if(display2){
-            ctx.drawImage(explosion, 100*collumn2, 96*row2, 100, 98, p2Position[0] - 50, p2Position[1] - 50, 100, 100);
-        }
-        if(collumn2 < 4){
-            collumn2++;
-        }
-        else{
-            collumn2 = 0;
-            if(row2 < 2){
-                row2++;
+            if(collumn1 < 4){
+                collumn1++;
             }
-        }
-        if(collumn2 == 4 && row2 == 2){
-            display2 = false;
-            potato = false;
-            sleep(500);
-            gameOver();
+            else{
+                collumn1 = 0;
+                if(row1 < 2){
+                    row1++;
+                }
+            }
+            if(collumn1 == 4 && row1 == 2){
+                display1 = false;
+                potato = false;
+                sleep(500);
+                gameOver();
+            }
         }
         
+        if(p2Alive && potato){
+            //move canvas to match player two rotation, draw, then revert
+            console.log("draw green");
+            ctx.translate(p2Position[0] + Math.cos(p2Angle*TO_RADIANS), p2Position[1] - Math.sin(p2Angle*TO_RADIANS));
+            ctx.rotate(p2Angle * TO_RADIANS);
+
+            ctx.fillStyle = 'green';
+            ctx.fillRect(-20, -15, 40, 30);
+            ctx.fillRect(20, -10, 30, 20);
+            ctx.beginPath();
+            ctx.arc(0, 0, 10, 0, 360);
+            ctx.stroke();
+            ctx.fillStyle = 'black';
+            ctx.fill();
+            ctx.closePath();
+
+            ctx.fillStyle = 'black';
+            ctx.fillRect(30, -15, 15, 5);
+            ctx.fillRect(30, 10, 15, 5);
+            ctx.fillRect(-15, -20, 15, 5);
+            ctx.fillRect(-15, 15, 15, 5);
+
+            ctx.rotate(-p2Angle * TO_RADIANS);
+            ctx.translate(-p2Position[0] - Math.cos(p2Angle*TO_RADIANS), -p2Position[1] + Math.sin(p2Angle*TO_RADIANS));
+        }
+        else if (potato){
+            if(display2){
+                ctx.drawImage(explosion, 100*collumn2, 96*row2, 100, 98, p2Position[0] - 50, p2Position[1] - 50, 100, 100);
+            }
+            if(collumn2 < 4){
+                collumn2++;
+            }
+            else{
+                collumn2 = 0;
+                if(row2 < 2){
+                    row2++;
+                }
+            }
+            if(collumn2 == 4 && row2 == 2){
+                display2 = false;
+                potato = false;
+                sleep(500);
+                gameOver();
+            }
+        
+        }
     }
-
-
-    
 }
 function deltaPlayer(){
     
@@ -737,7 +738,7 @@ function gameOver(){
         ctx.fillStyle = "green";
         ctx.fillText("GREEN WINS!", 500, 300);
     }
-    if(!p1Alive){
+    else if(!p1Alive && p2Alive){
         ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
         ctx.fillStyle = "red";
         ctx.fillText("RED SUCKS AT DRIVING!", 340, 280);
@@ -746,14 +747,16 @@ function gameOver(){
           
         
     }
-    else if(!p2Alive){
+    else if(!p2Alive && p1Alive){
         ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
         ctx.fillStyle = "green";
         ctx.fillText("GREEN SUCKS AT DRIVING!", 260, 280);
         ctx.fillStyle = "red";
         ctx.fillText("RED WINS!", 500, 350);
-    
-        
+    }
+    else{
+        ctx.fillStyle = "black";
+        ctx.fillText("2 losers?", 500, 350);
     }
 
     
@@ -771,6 +774,7 @@ function sleep(milliseconds) {
 
 
 function gameLoop() {
+    console.log(potato);
     if(potato){
         ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
         drawTrack();
@@ -781,13 +785,15 @@ function gameLoop() {
         lapTracker();
         
         if(numLaps-lapTrackerVar[0][0] == 0 || numLaps-lapTrackerVar[1][0] == 0){
+            ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
+            p1CanGo[0] = false;
+            p1CanGo[1] = false;
+            p2CanGo[0] = false;
+            p2CanGo[1] = false;
             gameOver();
         }
+        requestAnimationFrame(gameLoop);
     }
-    
-
-    requestAnimationFrame(gameLoop);
-    
     
 }
 
