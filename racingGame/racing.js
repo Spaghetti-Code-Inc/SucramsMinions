@@ -58,6 +58,9 @@ function init() {
     lapTrackerVar = [[0, 0, 0, 0],[0, 0, 0, 0]];       //[[player 1], [player 2]]      [player 1] = [laps, times crossed checker flag, times passed point 1, times passed point 2]
     numLaps = 2;
 
+
+    potato = true;
+
     startRace();
     
 }
@@ -207,6 +210,9 @@ function drawPlayers(p1Position, p2Position) {
         }
         if(collumn1 == 4 && row1 == 2){
             display1 = false;
+            potato = false;
+            sleep(500);
+            gameOver();
         }
     }
     
@@ -249,6 +255,9 @@ function drawPlayers(p1Position, p2Position) {
         }
         if(collumn2 == 4 && row2 == 2){
             display2 = false;
+            potato = false;
+            sleep(500);
+            gameOver();
         }
         
     }
@@ -643,32 +652,35 @@ function lapTracker(){
 }
 
 function drawCountdown(){
-    ctx.strokeStyle = "black"
-    ctx.lineWidth = 6;
-    ctx.fillStyle = lightColors[0];
-    ctx.beginPath()
-    ctx.arc(600, 50, 30, 0, 360);
-    ctx.fill();
-    ctx.stroke();
-    ctx.closePath();
-    ctx.fillStyle = lightColors[1];
-    ctx.beginPath()
-    ctx.arc(670, 50, 30, 0, 360);
-    ctx.fill();
-    ctx.stroke();
-    ctx.closePath();
-    ctx.fillStyle = lightColors[2];
-    ctx.beginPath()
-    ctx.arc(740, 50, 30, 0, 360);
-    ctx.fill();
-    ctx.stroke();
-    ctx.closePath();
+    if(potato){
+        ctx.strokeStyle = "black"
+        ctx.lineWidth = 6;
+        ctx.fillStyle = lightColors[0];
+        ctx.beginPath()
+        ctx.arc(600, 50, 30, 0, 360);
+        ctx.fill();
+        ctx.stroke();
+        ctx.closePath();
+        ctx.fillStyle = lightColors[1];
+        ctx.beginPath()
+        ctx.arc(670, 50, 30, 0, 360);
+        ctx.fill();
+        ctx.stroke();
+        ctx.closePath();
+        ctx.fillStyle = lightColors[2];
+        ctx.beginPath()
+        ctx.arc(740, 50, 30, 0, 360);
+        ctx.fill();
+        ctx.stroke();
+        ctx.closePath();
+        
+        ctx.font = "30px Arial";
+        ctx.fillStyle = "green";
+        ctx.fillText("GREEN LAPS LEFT: " + (numLaps-lapTrackerVar[1][0]), 50, 25);
+        ctx.fillStyle = "red";
+        ctx.fillText("RED LAPS LEFT: " + (numLaps-lapTrackerVar[0][0]), 1080, 25);
+    }
     
-    ctx.font = "30px Arial";
-    ctx.fillStyle = "green";
-    ctx.fillText("GREEN LAPS LEFT: " + (numLaps-lapTrackerVar[1][0]), 50, 25);
-    ctx.fillStyle = "red";
-    ctx.fillText("RED LAPS LEFT: " + (numLaps-lapTrackerVar[0][0]), 1080, 25);
     
 }
 
@@ -713,43 +725,66 @@ function startRace(){
 }
 
 function gameOver(){
-    ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
     ctx.font = "60px Arial";
+    
     if(lapTrackerVar[0][0] == numLaps){
+        ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
         ctx.fillStyle = "red";
         ctx.fillText("RED WINS!", 500, 300);
     }
     else if (lapTrackerVar[1][0] == numLaps){
+        ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
         ctx.fillStyle = "green";
         ctx.fillText("GREEN WINS!", 500, 300);
     }
-    else if(!p1Alive){
+    if(!p1Alive){
+        ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
         ctx.fillStyle = "red";
-        ctx.fillText("RED SUCKS AT DRIVING!", 260, 280);
+        ctx.fillText("RED SUCKS AT DRIVING!", 340, 280);
         ctx.fillStyle = "green";
         ctx.fillText("GREEN WINS!", 500, 350);
+          
+        
     }
     else if(!p2Alive){
+        ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
         ctx.fillStyle = "green";
         ctx.fillText("GREEN SUCKS AT DRIVING!", 260, 280);
         ctx.fillStyle = "red";
         ctx.fillText("RED WINS!", 500, 350);
+    
+        
     }
+
+    
+    
+
 }
 
+function sleep(milliseconds) {
+    const date = Date.now();
+    let currentDate = null;
+    do {
+      currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
+  }
+
+
 function gameLoop() {
-    
-    ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
-    drawTrack();
-    collisionDetect();
-    deltaPlayer();
-    drawPlayers(p1Pos, p2Pos);
-    drawCountdown();
-    lapTracker();
-    
-    if(numLaps-lapTrackerVar[0][0] == 0 || numLaps-lapTrackerVar[1][0] == 0 || !p1Alive || !p2Alive){
-        gameOver();
+    if(potato){
+        ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
+        drawTrack();
+        collisionDetect();
+        deltaPlayer();
+        drawPlayers(p1Pos, p2Pos);
+        drawCountdown();
+        lapTracker();
+        
+        if(numLaps-lapTrackerVar[0][0] == 0 || numLaps-lapTrackerVar[1][0] == 0){
+            gameOver();
+        }
     }
+    
 
     requestAnimationFrame(gameLoop);
     
