@@ -409,6 +409,7 @@ window.onload = setInterval(reload, 1000);
 function GameLoopTank() {
     if(STOP) return;
     ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
+    drawBackground();
     collisionDetect_tank();
     deltaPlayer_tank();
     bulletHander_tank();

@@ -2,13 +2,16 @@
 // (1) Add rotational momentum? would help with coming out of drift smoother
 // (2) Make map
 // (3) Make goal of the game, make game winnable
+const canvas = document.getElementById("gameScreen");
+const ctx = canvas.getContext("2d");
 
 const TO_RADIANS = Math.PI / 180;
 const TO_DEGREES = 180 / Math.PI;
+
 function init() {
     //pos and orientation vars
-    p1Pos = [200, 630];
-    p2Pos = [200, 570];
+    p1Pos = [240, 650];
+    p2Pos = [240, 590];
     p1Angle = 0;
     p2Angle = 0;
     //movement vars
@@ -44,6 +47,19 @@ function init() {
     p1movementSpeed = 8;
     p2rotateSpeed = 1;
     p2movementSpeed = 8;
+    collumn1 = 0;
+    row1 = 0;
+    display1 = true;
+    collumn2 = 0;
+    row2 = 0;
+    display2 = true;
+    lightColors = ["white", "white", "white"];
+
+    lapTrackerVar = [[0, 0, 0, 0],[0, 0, 0, 0]];       //[[player 1], [player 2]]      [player 1] = [laps, times crossed checker flag, times passed point 1, times passed point 2]
+    numLaps = 2;
+
+    startRace();
+    
 }
 
 document.addEventListener("keydown", keyDownHandler, false);
@@ -150,8 +166,6 @@ function keyUpHandler(e){		//handles all keys when unpressed
 
 function drawPlayers(p1Position, p2Position) {
     //explosion image is 500 pixels wide, times 5 frames; 292 pixels height, times 3 frames
-    collumn = 0;
-    row = 0;
 
     if(p1Alive){
         //move canvas to match player one rotation, draw, then revert
@@ -179,7 +193,21 @@ function drawPlayers(p1Position, p2Position) {
         ctx.translate(-p1Position[0] - Math.cos(p1Angle*TO_RADIANS), -p1Position[1] + Math.sin(p1Angle*TO_RADIANS));
     }
     else{
-        ctx.drawImage(explosion, p1Position[0], p1Position[1], 100, 100);
+        if(display1){
+            ctx.drawImage(explosion, 100*collumn1, 96*row1, 100, 98, p1Position[0] - 50, p1Position[1] - 50, 100, 100);
+        }
+        if(collumn1 < 4){
+            collumn1++;
+        }
+        else{
+            collumn1 = 0;
+            if(row1 < 2){
+                row1++;
+            }
+        }
+        if(collumn1 == 4 && row1 == 2){
+            display1 = false;
+        }
     }
     
     if(p2Alive){
@@ -207,16 +235,20 @@ function drawPlayers(p1Position, p2Position) {
         ctx.translate(-p2Position[0] - Math.cos(p2Angle*TO_RADIANS), -p2Position[1] + Math.sin(p2Angle*TO_RADIANS));
     }
     else{
-        ctx.drawImage(explosion, 100*collumn, 98*row, 100, 98, p2Position[0] - 50, p2Position[1] - 50, 100, 100);
-        if(collumn < 4){
-            collumn++;
-            console.log(collumn);
+        if(display2){
+            ctx.drawImage(explosion, 100*collumn2, 96*row2, 100, 98, p2Position[0] - 50, p2Position[1] - 50, 100, 100);
+        }
+        if(collumn2 < 4){
+            collumn2++;
         }
         else{
-            collumn = 0;
-            if(row < 2){
-                row++;
+            collumn2 = 0;
+            if(row2 < 2){
+                row2++;
             }
+        }
+        if(collumn2 == 4 && row2 == 2){
+            display2 = false;
         }
         
     }
@@ -359,11 +391,11 @@ function drawTrack(){
         ctx.fillStyle = "white";
         ctx.fillRect(290 + i*20, 520, 20, 20);
     }
-    for(i = 0; i < 26; i+=2){
+    for(i = 0; i < 24; i+=2){
         ctx.fillStyle = "red";
-        ctx.fillRect(430 + i*20, 480, 20, 20);
+        ctx.fillRect(470 + i*20, 480, 20, 20);
         ctx.fillStyle = "white";
-        ctx.fillRect(450 + i*20, 480, 20, 20);
+        ctx.fillRect(490 + i*20, 480, 20, 20);
     }
     for(i = 0; i < 12; i+=2){
         ctx.fillStyle = "red";
@@ -388,12 +420,23 @@ function drawTrack(){
         ctx.fillRect(1070 + i*20, 210, 20, 20);
         
     }
+    for(i=0; i<8; i+=2){
+        ctx.fillStyle = "red";
+        ctx.fillRect(280 + i*20, 450, 20, 20);
+        ctx.fillStyle = "white";
+        ctx.fillRect(300 + i*20, 450, 20, 20);
+        
+    }
     ctx.fillStyle = "white";
-    ctx.fillRect(270, 500, 20, 20);
+    ctx.fillRect(260, 495, 20, 30);
     ctx.fillRect(220, 210, 20, 20);
     ctx.fillRect(260, 210, 20, 20);
     ctx.fillRect(1190, 470, 20, 20);
     ctx.fillRect(1150, 485, 20, 20);
+    ctx.fillRect(950, 440, 20, 20);
+    ctx.fillRect(990, 440, 20, 20);
+    ctx.fillRect(450, 465, 20, 20);
+    ctx.fillRect(220, 470, 20, 20);
     ctx.fillStyle = "red";
     ctx.fillRect(240, 210, 20, 20);
     ctx.fillRect(1140, 500, 20, 20);
@@ -401,11 +444,21 @@ function drawTrack(){
     ctx.fillRect(1170, 475, 20, 20);
     ctx.fillRect(1010, 435, 20, 20);
     ctx.fillRect(970, 440, 20, 20);
-    ctx.fillRect(945, 460, 20, 20);
+    ctx.fillRect(942, 460, 20, 20);
+    ctx.fillRect(440, 450, 20, 20);
+    ctx.fillRect(210, 450, 20, 20);
+    ctx.fillRect(240, 490, 30, 20);
     
+    for(i = 0; i < 10; i++){
+        ctx.fillStyle = "black";
+        ctx.fillRect(300, 540 + i*40, 20, 20);
+        ctx.fillRect(320, 560 + i*40, 20, 20);
+        ctx.fillStyle = "white";
+        ctx.fillRect(300, 560 + i*40, 20, 20);
+        ctx.fillRect(320, 540 + i*40, 20, 20);
+    }
 
 }
-
 
 
 function collisionDetect(){
@@ -413,9 +466,36 @@ function collisionDetect(){
     
     nextPosF1 = [p1Pos[0] + Math.cos(p1Angle*TO_RADIANS)*p1movementSpeed, p1Pos[1] + Math.sin(p1Angle*TO_RADIANS)*p1movementSpeed];
     //Use two squares? ahhhh prolly doesnt matter anyway
+    
     if(nextPosF1[0] + (20+Math.cos(p1Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosF1[0] - (20-Math.cos(p1Angle*TO_RADIANS)) < 0 || nextPosF1[1] + (20+Math.sin(p1Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosF1[1] - (20-Math.sin(p1Angle*TO_RADIANS)) < 0){
         p1CanGo[0] = false;
-        p1Alive = false;
+        if(Math.abs(p1Speed> 6)){
+            p1Alive = false;
+        }
+    }
+    else if(nextPosF1[0] + (20+Math.cos(p1Angle*TO_RADIANS)) > 280 && nextPosF1[0] - (20-Math.cos(p1Angle*TO_RADIANS)) < 1130 && nextPosF1[1] + (20+Math.sin(p1Angle*TO_RADIANS)) > 475 && nextPosF1[1] - (20-Math.sin(p1Angle*TO_RADIANS)) < 520){
+        p1CanGo[0] = false;
+        if(Math.abs(p1Speed> 6)){
+            p1Alive = false;
+        }
+    }
+    else if(nextPosF1[0] + (20+Math.cos(p1Angle*TO_RADIANS)) > 1040 && nextPosF1[0] - (20-Math.cos(p1Angle*TO_RADIANS)) < 1190 && nextPosF1[1] + (20+Math.sin(p1Angle*TO_RADIANS)) > 220 && nextPosF1[1] - (20-Math.sin(p1Angle*TO_RADIANS)) < 470){
+        p1CanGo[0] = false;
+        if(Math.abs(p1Speed> 6)){
+            p1Alive = false;
+        }
+    }
+    else if(nextPosF1[0] + (20+Math.cos(p1Angle*TO_RADIANS)) > 220 && nextPosF1[0] - (20-Math.cos(p1Angle*TO_RADIANS)) < 270 && nextPosF1[1] + (20+Math.sin(p1Angle*TO_RADIANS)) > 230 && nextPosF1[1] - (20-Math.sin(p1Angle*TO_RADIANS)) < 465){
+        p1CanGo[0] = false;
+        if(Math.abs(p1Speed> 6)){
+            p1Alive = false;
+        }
+    }
+    //slowdown
+    else if(nextPosF1[0] + (20+Math.cos(p1Angle*TO_RADIANS)) > 500 && nextPosF1[0] - (20-Math.cos(p1Angle*TO_RADIANS)) < 830 && nextPosF1[1] + (20+Math.sin(p1Angle*TO_RADIANS)) > 0 && nextPosF1[1] - (20-Math.sin(p1Angle*TO_RADIANS)) < 260){
+        if(p1Speed > 4){
+            p1Speed -= 0.5;
+        }
     }
     else{
         p1CanGo[0] = true;
@@ -424,26 +504,91 @@ function collisionDetect(){
     nextPosB1 = [p1Pos[0] - Math.cos(p1Angle*TO_RADIANS)*p1movementSpeed, p1Pos[1] - Math.sin(p1Angle*TO_RADIANS)*p1movementSpeed];
     if(nextPosB1[0] + (17+Math.cos(p1Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosB1[0] - (17-Math.cos(p1Angle*TO_RADIANS)) < 0 || nextPosB1[1] + (17+Math.sin(p1Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosB1[1] - (17-Math.sin(p1Angle*TO_RADIANS)) < 0){
         p1CanGo[1] = false;
-        p1Alive = false;
+        if(Math.abs(p1Speed> 6)){
+            p1Alive = false;
+        }
+    }
+    else if(nextPosB1[0] + (17+Math.cos(p1Angle*TO_RADIANS)) > 280 && nextPosB1[0] - (17-Math.cos(p1Angle*TO_RADIANS)) < 1130 && nextPosB1[1] + (20+Math.sin(p1Angle*TO_RADIANS)) > 475 && nextPosB1[1] - (17-Math.sin(p1Angle*TO_RADIANS)) < 520){
+        p1CanGo[1] = false;
+        if(Math.abs(p1Speed> 6)){
+            p1Alive = false;
+        }
+    }
+    else if(nextPosB1[0] + (17+Math.cos(p1Angle*TO_RADIANS)) > 1040 && nextPosB1[0] - (17-Math.cos(p1Angle*TO_RADIANS)) < 1190 && nextPosB1[1] + (20+Math.sin(p1Angle*TO_RADIANS)) > 220 && nextPosB1[1] - (17-Math.sin(p1Angle*TO_RADIANS)) < 470){
+        p1CanGo[1] = false;
+        if(Math.abs(p1Speed> 6)){
+            p1Alive = false;
+        }
+    }
+    else if(nextPosB1[0] + (17+Math.cos(p1Angle*TO_RADIANS)) > 220 && nextPosB1[0] - (17-Math.cos(p1Angle*TO_RADIANS)) < 270 && nextPosB1[1] + (20+Math.sin(p1Angle*TO_RADIANS)) > 230 && nextPosB1[1] - (17-Math.sin(p1Angle*TO_RADIANS)) < 465){
+        p1CanGo[1] = false;
+        if(Math.abs(p1Speed> 6)){
+            p1Alive = false;
+        }
     }
     else{
         p1CanGo[1] = true;
     }
 
-    //player 2 border, so tank doesn't go off screen
+    //player 2 forward
     nextPosF2 = [p2Pos[0] + Math.cos(p2Angle*TO_RADIANS)*p2movementSpeed, p2Pos[1] + Math.sin(p2Angle*TO_RADIANS)*p2movementSpeed];
     if(nextPosF2[0] + (25+Math.cos(p2Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosF2[0] - (25-Math.cos(p2Angle*TO_RADIANS)) < 0 || nextPosF2[1] + (25+Math.sin(p2Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosF2[1] - (25-Math.sin(p2Angle*TO_RADIANS)) < 0){
         p2CanGo[0] = false;
-        p2Alive = false;
+        if(Math.abs(p2Speed> 6)){
+            p2Alive = false;
+        }
+    }
+    else if(nextPosF2[0] + (20+Math.cos(p2Angle*TO_RADIANS)) > 280 && nextPosF2[0] - (20-Math.cos(p2Angle*TO_RADIANS)) < 1130 && nextPosF2[1] + (20+Math.sin(p2Angle*TO_RADIANS)) > 475 && nextPosF2[1] - (20-Math.sin(p2Angle*TO_RADIANS)) < 520){
+        p2CanGo[0] = false;
+        if(Math.abs(p2Speed> 6)){
+            p2Alive = false;
+        }
+    }
+    else if(nextPosF2[0] + (20+Math.cos(p2Angle*TO_RADIANS)) > 1040 && nextPosF2[0] - (20-Math.cos(p2Angle*TO_RADIANS)) < 1190 && nextPosF2[1] + (20+Math.sin(p2Angle*TO_RADIANS)) > 220 && nextPosF2[1] - (20-Math.sin(p2Angle*TO_RADIANS)) < 470){
+        p2CanGo[0] = false;
+        if(Math.abs(p2Speed> 6)){
+            p2Alive = false;
+        }
+    }
+    else if(nextPosF2[0] + (20+Math.cos(p2Angle*TO_RADIANS)) > 220 && nextPosF2[0] - (20-Math.cos(p2Angle*TO_RADIANS)) < 270 && nextPosF2[1] + (20+Math.sin(p2Angle*TO_RADIANS)) > 230 && nextPosF2[1] - (20-Math.sin(p2Angle*TO_RADIANS)) < 465){
+        p2CanGo[0] = false;
+        if(Math.abs(p2Speed> 6)){
+            p2Alive = false;
+        }
+    }
+    else if(nextPosF2[0] + (20+Math.cos(p2Angle*TO_RADIANS)) > 500 && nextPosF2[0] - (20-Math.cos(p2Angle*TO_RADIANS)) < 830 && nextPosF2[1] + (20+Math.sin(p2Angle*TO_RADIANS)) > 0 && nextPosF2[1] - (20-Math.sin(p2Angle*TO_RADIANS)) < 260){
+        if(p2Speed > 4){
+            p2Speed -= 0.5;
+        }
     }
     else{
         p2CanGo[0] = true;
     }
     //backwards player 2
     nextPosB2 = [p2Pos[0] - Math.cos(p2Angle*TO_RADIANS)*p2movementSpeed, p2Pos[1] - Math.sin(p2Angle*TO_RADIANS)*p2movementSpeed];
-    if(nextPosB2[0] + (25+Math.cos(p2Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosB2[0] - (25-Math.cos(p2Angle*TO_RADIANS)) < 0 || nextPosB2[1] + (25+Math.sin(p2Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosB2[1] - (25-Math.sin(p2Angle*TO_RADIANS)) < 0){
+    if(nextPosB2[0] + (17+Math.cos(p2Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosB2[0] - (17-Math.cos(p2Angle*TO_RADIANS)) < 0 || nextPosB2[1] + (17+Math.sin(p2Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosB2[1] - (17-Math.sin(p2Angle*TO_RADIANS)) < 0){
         p2CanGo[1] = false;
-        p2Alive = false;
+        if(Math.abs(p2Speed> 6)){
+            p2Alive = false;
+        }
+    }
+    else if(nextPosB2[0] + (17+Math.cos(p2Angle*TO_RADIANS)) > 280 && nextPosB2[0] - (17-Math.cos(p2Angle*TO_RADIANS)) < 1130 && nextPosB2[1] + (17+Math.sin(p2Angle*TO_RADIANS)) > 475 && nextPosB2[1] - (17-Math.sin(p2Angle*TO_RADIANS)) < 520){
+        p2CanGo[1] = false;
+        if(Math.abs(p2Speed> 6)){
+            p2Alive = false;
+        }
+    }
+    else if(nextPosB2[0] + (20+Math.cos(p2Angle*TO_RADIANS)) > 1040 && nextPosB2[0] - (17-Math.cos(p2Angle*TO_RADIANS)) < 1190 && nextPosB2[1] + (17+Math.sin(p2Angle*TO_RADIANS)) > 220 && nextPosB2[1] - (17-Math.sin(p2Angle*TO_RADIANS)) < 470){
+        p2CanGo[1] = false;
+        if(Math.abs(p2Speed> 6)){
+            p2Alive = false;
+        }
+    }
+    else if(nextPosB2[0] + (20+Math.cos(p2Angle*TO_RADIANS)) > 220 && nextPosB2[0] - (17-Math.cos(p2Angle*TO_RADIANS)) < 270 && nextPosB2[1] + (17+Math.sin(p2Angle*TO_RADIANS)) > 230 && nextPosB2[1] - (17-Math.sin(p2Angle*TO_RADIANS)) < 465){
+        p2CanGo[1] = false;
+        if(Math.abs(p2Speed> 6)){
+            p2Alive = false;
+        }
     }
     else{
         p2CanGo[1] = true;
@@ -451,13 +596,146 @@ function collisionDetect(){
 
 }
 
-function drawGUI(){
-    ctx.font = "20px Arial";
+function lapTracker(){
+    //player 1
+    if(p1Pos[0] > 300 && p1Pos[0] < 340 && p1Pos[1] > 540 && p1Pos[1] < gameScreen.clientHeight){
+        lapTrackerVar[0][1]++;
+        
+    }
+    //prevents from going backwards
+    else if(p1Pos[0] > 1100 && p1Pos[0] < 1140 && p1Pos[1] > 0 && p1Pos[1] < 210 && lapTrackerVar[0][1] >= 1 && lapTrackerVar[0][3] == 0){
+        lapTrackerVar[0][2]++;
+        
+    }
+    else if(p1Pos[0] > 220 && p1Pos[0] < 260 && p1Pos[1] > 0 && p1Pos[1] < 210 && lapTrackerVar[0][1] >= 1 && lapTrackerVar[0][2] >= 1){
+        lapTrackerVar[0][3]++;
+        
+    }
+    if(lapTrackerVar[0][1] >= 1 && lapTrackerVar[0][2] >= 1 && lapTrackerVar[0][3] >= 1 && p1Pos[0] > 300 && p1Pos[0] < 340){
+        lapTrackerVar[0][0]++;
+        lapTrackerVar[0][1] = 0;
+        lapTrackerVar[0][2] = 0;
+        lapTrackerVar[0][3] = 0;
+        console.log("player 1 lap " + lapTrackerVar[0][0]);
+    }
+    //player 2
+    if(p2Pos[0] > 300 && p2Pos[0] < 340 && p2Pos[1] > 540 && p2Pos[1] < gameScreen.clientHeight){
+        lapTrackerVar[1][1]++;
+        
+    }
+    //prevents from going backwards
+    else if(p2Pos[0] > 1100 && p2Pos[0] < 1140 && p2Pos[1] > 0 && p2Pos[1] < 210 && lapTrackerVar[1][1] >= 1 && lapTrackerVar[1][3] == 0){
+        lapTrackerVar[1][2]++;
+        
+    }
+    else if(p2Pos[0] > 220 && p2Pos[0] < 260 && p2Pos[1] > 0 && p2Pos[1] < 210 && lapTrackerVar[1][1] >= 1 && lapTrackerVar[1][2] >= 1){
+        lapTrackerVar[1][3]++;
+        
+    }
+    if(lapTrackerVar[1][1] >= 1 && lapTrackerVar[1][2] >= 1 && lapTrackerVar[1][3] >= 1 && p2Pos[0] > 300 && p2Pos[0] < 340){
+        lapTrackerVar[1][0]++;
+        lapTrackerVar[1][1] = 0;
+        lapTrackerVar[1][2] = 0;
+        lapTrackerVar[1][3] = 0;
+        console.log("player 2 lap " + lapTrackerVar[1][0]);
+    }
+
+}
+
+function drawCountdown(){
+    ctx.strokeStyle = "black"
+    ctx.lineWidth = 6;
+    ctx.fillStyle = lightColors[0];
+    ctx.beginPath()
+    ctx.arc(600, 50, 30, 0, 360);
+    ctx.fill();
+    ctx.stroke();
+    ctx.closePath();
+    ctx.fillStyle = lightColors[1];
+    ctx.beginPath()
+    ctx.arc(670, 50, 30, 0, 360);
+    ctx.fill();
+    ctx.stroke();
+    ctx.closePath();
+    ctx.fillStyle = lightColors[2];
+    ctx.beginPath()
+    ctx.arc(740, 50, 30, 0, 360);
+    ctx.fill();
+    ctx.stroke();
+    ctx.closePath();
     
+    ctx.font = "30px Arial";
+    ctx.fillStyle = "green";
+    ctx.fillText("GREEN LAPS LEFT: " + (numLaps-lapTrackerVar[1][0]), 50, 25);
+    ctx.fillStyle = "red";
+    ctx.fillText("RED LAPS LEFT: " + (numLaps-lapTrackerVar[0][0]), 1080, 25);
+    
+}
+
+function doLights(){
+    
+    if(lightColors[0] != "red" && lightColors[0] != "#0FFF50"){
+        console.log("3");
+        lightColors[0] = "red";
+    }
+    else if(lightColors[1] != "red" && lightColors[1] != "#0FFF50"){
+        console.log("2");
+        lightColors[1] = "red"
+    }
+    else if(lightColors[2] != "red" && lightColors[2] != "#0FFF50"){
+        console.log("1");
+        lightColors[2] = "red"
+    }
+    else{
+        lightColors[0] = "#0FFF50";
+        lightColors[1] = "#0FFF50";
+        lightColors[2] = "#0FFF50";
+    }
+    drawCountdown();
     
 }
 
 
+
+function startRace(){
+    drawTrack();
+    drawPlayers(p1Pos, p2Pos);
+    drawCountdown();
+    setTimeout(() => {doLights();}, 1000);
+    
+    setTimeout(() => {doLights();}, 2000);
+
+    setTimeout(() => {doLights();}, 3000);
+
+    setTimeout(() => {doLights();}, 4000);
+    
+    setTimeout(() => {gameLoop();}, 4000);
+}
+
+function gameOver(){
+    ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
+    ctx.font = "60px Arial";
+    if(lapTrackerVar[0][0] == numLaps){
+        ctx.fillStyle = "red";
+        ctx.fillText("RED WINS!", 500, 300);
+    }
+    else if (lapTrackerVar[1][0] == numLaps){
+        ctx.fillStyle = "green";
+        ctx.fillText("GREEN WINS!", 500, 300);
+    }
+    else if(!p1Alive){
+        ctx.fillStyle = "red";
+        ctx.fillText("RED SUCKS AT DRIVING!", 260, 280);
+        ctx.fillStyle = "green";
+        ctx.fillText("GREEN WINS!", 500, 350);
+    }
+    else if(!p2Alive){
+        ctx.fillStyle = "green";
+        ctx.fillText("GREEN SUCKS AT DRIVING!", 260, 280);
+        ctx.fillStyle = "red";
+        ctx.fillText("RED WINS!", 500, 350);
+    }
+}
 
 function gameLoop() {
     
@@ -466,6 +744,16 @@ function gameLoop() {
     collisionDetect();
     deltaPlayer();
     drawPlayers(p1Pos, p2Pos);
-    drawGUI();    
+    drawCountdown();
+    lapTracker();
+    
+    if(numLaps-lapTrackerVar[0][0] == 0 || numLaps-lapTrackerVar[1][0] == 0 || !p1Alive || !p2Alive){
+        gameOver();
+    }
+
+    requestAnimationFrame(gameLoop);
+    
+    
 }
 
+init();
