@@ -1,7 +1,4 @@
-//TODO
-// (1) Add rotational momentum? would help with coming out of drift smoother
-// (2) Make map
-// (3) Make goal of the game, make game winnable
+
 const canvas = document.getElementById("gameScreen");
 const ctx = canvas.getContext("2d");
 
@@ -479,26 +476,30 @@ function collisionDetect(){
     
     if(nextPosF1[0] + (20+Math.cos(p1Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosF1[0] - (20-Math.cos(p1Angle*TO_RADIANS)) < 0 || nextPosF1[1] + (20+Math.sin(p1Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosF1[1] - (20-Math.sin(p1Angle*TO_RADIANS)) < 0){
         p1CanGo[0] = false;
-        if(Math.abs(p1Speed> 6)){
-            p1Alive = false;
+        if(Math.abs(p1Speed> 7.5)){
+            p1Alive = Math.random() < 0.6;
+            p1Speed = 0;
         }
     }
     else if(nextPosF1[0] + (20+Math.cos(p1Angle*TO_RADIANS)) > 280 && nextPosF1[0] - (20-Math.cos(p1Angle*TO_RADIANS)) < 1130 && nextPosF1[1] + (20+Math.sin(p1Angle*TO_RADIANS)) > 475 && nextPosF1[1] - (20-Math.sin(p1Angle*TO_RADIANS)) < 520){
         p1CanGo[0] = false;
-        if(Math.abs(p1Speed> 6)){
-            p1Alive = false;
+        if(Math.abs(p1Speed> 7.5)){
+            p1Alive = Math.random() < 0.6;
+            p1Speed = 0;
         }
     }
     else if(nextPosF1[0] + (20+Math.cos(p1Angle*TO_RADIANS)) > 1040 && nextPosF1[0] - (20-Math.cos(p1Angle*TO_RADIANS)) < 1190 && nextPosF1[1] + (20+Math.sin(p1Angle*TO_RADIANS)) > 220 && nextPosF1[1] - (20-Math.sin(p1Angle*TO_RADIANS)) < 470){
         p1CanGo[0] = false;
-        if(Math.abs(p1Speed> 6)){
-            p1Alive = false;
+        if(Math.abs(p1Speed> 7.5)){
+            p1Alive = Math.random() < 0.6;
+            p1Speed = 0;
         }
     }
     else if(nextPosF1[0] + (20+Math.cos(p1Angle*TO_RADIANS)) > 220 && nextPosF1[0] - (20-Math.cos(p1Angle*TO_RADIANS)) < 270 && nextPosF1[1] + (20+Math.sin(p1Angle*TO_RADIANS)) > 230 && nextPosF1[1] - (20-Math.sin(p1Angle*TO_RADIANS)) < 465){
         p1CanGo[0] = false;
-        if(Math.abs(p1Speed> 6)){
-            p1Alive = false;
+        if(Math.abs(p1Speed> 7.5)){
+            p1Alive = Math.random() < 0.6;
+            p1Speed = 0;
         }
     }
     //slowdown
@@ -514,26 +515,30 @@ function collisionDetect(){
     nextPosB1 = [p1Pos[0] - Math.cos(p1Angle*TO_RADIANS)*p1movementSpeed, p1Pos[1] - Math.sin(p1Angle*TO_RADIANS)*p1movementSpeed];
     if(nextPosB1[0] + (17+Math.cos(p1Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosB1[0] - (17-Math.cos(p1Angle*TO_RADIANS)) < 0 || nextPosB1[1] + (17+Math.sin(p1Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosB1[1] - (17-Math.sin(p1Angle*TO_RADIANS)) < 0){
         p1CanGo[1] = false;
-        if(Math.abs(p1Speed> 6)){
-            p1Alive = false;
+        if(Math.abs(p1Speed> 7.5)){
+            p1Alive = Math.random() < 0.6;
+            p1Speed = 0;
         }
     }
     else if(nextPosB1[0] + (17+Math.cos(p1Angle*TO_RADIANS)) > 280 && nextPosB1[0] - (17-Math.cos(p1Angle*TO_RADIANS)) < 1130 && nextPosB1[1] + (20+Math.sin(p1Angle*TO_RADIANS)) > 475 && nextPosB1[1] - (17-Math.sin(p1Angle*TO_RADIANS)) < 520){
         p1CanGo[1] = false;
-        if(Math.abs(p1Speed> 6)){
-            p1Alive = false;
+        if(Math.abs(p1Speed> 7.5)){
+            p1Alive = Math.random() < 0.6;
+            p1Speed = 0;
         }
     }
     else if(nextPosB1[0] + (17+Math.cos(p1Angle*TO_RADIANS)) > 1040 && nextPosB1[0] - (17-Math.cos(p1Angle*TO_RADIANS)) < 1190 && nextPosB1[1] + (20+Math.sin(p1Angle*TO_RADIANS)) > 220 && nextPosB1[1] - (17-Math.sin(p1Angle*TO_RADIANS)) < 470){
         p1CanGo[1] = false;
-        if(Math.abs(p1Speed> 6)){
-            p1Alive = false;
+        if(Math.abs(p1Speed> 7.5)){
+            p1Alive = Math.random() < 0.6;
+            p1Speed = 0;
         }
     }
     else if(nextPosB1[0] + (17+Math.cos(p1Angle*TO_RADIANS)) > 220 && nextPosB1[0] - (17-Math.cos(p1Angle*TO_RADIANS)) < 270 && nextPosB1[1] + (20+Math.sin(p1Angle*TO_RADIANS)) > 230 && nextPosB1[1] - (17-Math.sin(p1Angle*TO_RADIANS)) < 465){
         p1CanGo[1] = false;
-        if(Math.abs(p1Speed> 6)){
-            p1Alive = false;
+        if(Math.abs(p1Speed> 7.5)){
+            p1Alive = Math.random() < 0.6;
+            p1Speed = 0;
         }
     }
     else{
@@ -544,26 +549,30 @@ function collisionDetect(){
     nextPosF2 = [p2Pos[0] + Math.cos(p2Angle*TO_RADIANS)*p2movementSpeed, p2Pos[1] + Math.sin(p2Angle*TO_RADIANS)*p2movementSpeed];
     if(nextPosF2[0] + (25+Math.cos(p2Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosF2[0] - (25-Math.cos(p2Angle*TO_RADIANS)) < 0 || nextPosF2[1] + (25+Math.sin(p2Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosF2[1] - (25-Math.sin(p2Angle*TO_RADIANS)) < 0){
         p2CanGo[0] = false;
-        if(Math.abs(p2Speed> 6)){
-            p2Alive = false;
+        if(Math.abs(p2Speed> 7.5)){
+            p2Alive = Math.random() < 0.6;
+            p2Speed = 0;
         }
     }
     else if(nextPosF2[0] + (20+Math.cos(p2Angle*TO_RADIANS)) > 280 && nextPosF2[0] - (20-Math.cos(p2Angle*TO_RADIANS)) < 1130 && nextPosF2[1] + (20+Math.sin(p2Angle*TO_RADIANS)) > 475 && nextPosF2[1] - (20-Math.sin(p2Angle*TO_RADIANS)) < 520){
         p2CanGo[0] = false;
-        if(Math.abs(p2Speed> 6)){
-            p2Alive = false;
+        if(Math.abs(p2Speed> 7.5)){
+            p2Alive = Math.random() < 0.6;
+            p2Speed = 0;
         }
     }
     else if(nextPosF2[0] + (20+Math.cos(p2Angle*TO_RADIANS)) > 1040 && nextPosF2[0] - (20-Math.cos(p2Angle*TO_RADIANS)) < 1190 && nextPosF2[1] + (20+Math.sin(p2Angle*TO_RADIANS)) > 220 && nextPosF2[1] - (20-Math.sin(p2Angle*TO_RADIANS)) < 470){
         p2CanGo[0] = false;
-        if(Math.abs(p2Speed> 6)){
-            p2Alive = false;
+        if(Math.abs(p2Speed> 7.5)){
+            p2Alive = Math.random() < 0.6;
+            p2Speed = 0;
         }
     }
     else if(nextPosF2[0] + (20+Math.cos(p2Angle*TO_RADIANS)) > 220 && nextPosF2[0] - (20-Math.cos(p2Angle*TO_RADIANS)) < 270 && nextPosF2[1] + (20+Math.sin(p2Angle*TO_RADIANS)) > 230 && nextPosF2[1] - (20-Math.sin(p2Angle*TO_RADIANS)) < 465){
         p2CanGo[0] = false;
-        if(Math.abs(p2Speed> 6)){
-            p2Alive = false;
+        if(Math.abs(p2Speed> 7.5)){
+            p2Alive = Math.random() < 0.6;
+            p2Speed = 0;
         }
     }
     else if(nextPosF2[0] + (20+Math.cos(p2Angle*TO_RADIANS)) > 500 && nextPosF2[0] - (20-Math.cos(p2Angle*TO_RADIANS)) < 830 && nextPosF2[1] + (20+Math.sin(p2Angle*TO_RADIANS)) > 0 && nextPosF2[1] - (20-Math.sin(p2Angle*TO_RADIANS)) < 260){
@@ -578,30 +587,35 @@ function collisionDetect(){
     nextPosB2 = [p2Pos[0] - Math.cos(p2Angle*TO_RADIANS)*p2movementSpeed, p2Pos[1] - Math.sin(p2Angle*TO_RADIANS)*p2movementSpeed];
     if(nextPosB2[0] + (17+Math.cos(p2Angle*TO_RADIANS)) > gameScreen.clientWidth || nextPosB2[0] - (17-Math.cos(p2Angle*TO_RADIANS)) < 0 || nextPosB2[1] + (17+Math.sin(p2Angle*TO_RADIANS)) > gameScreen.clientHeight || nextPosB2[1] - (17-Math.sin(p2Angle*TO_RADIANS)) < 0){
         p2CanGo[1] = false;
-        if(Math.abs(p2Speed> 6)){
-            p2Alive = false;
+        if(Math.abs(p2Speed> 7.5)){
+            p2Alive = Math.random() < 0.6;
+            p2Speed = 0;
         }
     }
     else if(nextPosB2[0] + (17+Math.cos(p2Angle*TO_RADIANS)) > 280 && nextPosB2[0] - (17-Math.cos(p2Angle*TO_RADIANS)) < 1130 && nextPosB2[1] + (17+Math.sin(p2Angle*TO_RADIANS)) > 475 && nextPosB2[1] - (17-Math.sin(p2Angle*TO_RADIANS)) < 520){
         p2CanGo[1] = false;
-        if(Math.abs(p2Speed> 6)){
-            p2Alive = false;
+        if(Math.abs(p2Speed> 7.5)){
+            p2Alive = Math.random() < 0.6;
+            p2Speed = 0;
         }
     }
     else if(nextPosB2[0] + (20+Math.cos(p2Angle*TO_RADIANS)) > 1040 && nextPosB2[0] - (17-Math.cos(p2Angle*TO_RADIANS)) < 1190 && nextPosB2[1] + (17+Math.sin(p2Angle*TO_RADIANS)) > 220 && nextPosB2[1] - (17-Math.sin(p2Angle*TO_RADIANS)) < 470){
         p2CanGo[1] = false;
-        if(Math.abs(p2Speed> 6)){
-            p2Alive = false;
+        if(Math.abs(p2Speed> 7.5)){
+            p2Alive = Math.random() < 0.6;
+            p2Speed = 0;
         }
     }
     else if(nextPosB2[0] + (20+Math.cos(p2Angle*TO_RADIANS)) > 220 && nextPosB2[0] - (17-Math.cos(p2Angle*TO_RADIANS)) < 270 && nextPosB2[1] + (17+Math.sin(p2Angle*TO_RADIANS)) > 230 && nextPosB2[1] - (17-Math.sin(p2Angle*TO_RADIANS)) < 465){
         p2CanGo[1] = false;
-        if(Math.abs(p2Speed> 6)){
-            p2Alive = false;
+        if(Math.abs(p2Speed> 7.5)){
+            p2Alive = Math.random() < 0.6;
+            p2Speed = 0;
         }
     }
     else{
         p2CanGo[1] = true;
+        
     }
 
 }
@@ -758,9 +772,6 @@ function gameOver(){
         ctx.fillStyle = "black";
         ctx.fillText("2 losers?", 500, 350);
     }
-
-    
-    
 
 }
 
