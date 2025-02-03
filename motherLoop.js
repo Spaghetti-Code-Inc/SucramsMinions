@@ -1,8 +1,8 @@
 const canvas = document.getElementById("gameScreen");
 const ctx = canvas.getContext("2d");
 
-const HEIGHT = 600;
-const WIDTH = 1000;
+const HEIGHT = 700;
+const WIDTH = 1400;
 
 var STOP;
 
@@ -19,7 +19,7 @@ var food; var foodWidth; var foodUp;
 
 // Has game id, -1 means next game up
 //0 is pong, 1 is snake game, 2 is tank game
-currentGame = [3, 1, 2, 0]
+currentGame = [0, 0, 0, 0]
 game = 0;
 
 function MotherLoop(){
@@ -67,7 +67,6 @@ function PlayNext(currentGame){
     // Racing Game
     else if (currentGame == 3){
         InitRace();
-
         intervalID = setInterval(GameLoopRace, 16.6);
         addEventListener("keydown", keyDownHandler_race);
         addEventListener("keyup", keyUpHandler_race);

@@ -213,7 +213,7 @@ function bulletHander_tank(){
 
     for (let i = 0; i < bullets.length; i++){
         moveBullet_tank(bullets[i])
-        drawBullet_tank(bullets[i][0], bullets[i][1]);
+        drawBullet_tank(bullets[i][0], bullets[i][1], bullets[i][3]);
         if(bullets[i][0] > gameScreen.clientWidth || bullets[i][0] < 0 || bullets[i][1] > gameScreen.clientHeight || bullets[i][1] < 0){
             if(bullets[i][3] > 0){
                 if(bullets[i][0] > gameScreen.clientWidth){
@@ -242,8 +242,6 @@ function bulletHander_tank(){
                     bullets = bullets.slice(0, i).concat(bullets.slice(i+1));
                 }
             }
-            
-            
         }
     }
 
@@ -254,8 +252,13 @@ function moveBullet_tank(bullet){
     bullet[1]+= (Math.sin(bullet[2]*TO_RADIANS)*bulletSpeed);
 }
 
-function drawBullet_tank(bullX, bullY){
-    ctx.fillStyle = "grey";
+function drawBullet_tank(bullX, bullY, numBounces){
+    if(numBounces >= 1){
+        ctx.fillStyle = "#343434";
+    }
+    else{
+        ctx.fillStyle = "grey";
+    }
     ctx.fillRect(bullX, bullY, 5, 5);
 }
 
@@ -383,7 +386,7 @@ function goToEndScreen_tank(){
 }
 
 function drawBackground(){
-    ctx.fillStyle = "lightgrey";
+    ctx.fillStyle = "#E5E4E2";
     ctx.fillRect(0, 0, gameScreen.clientWidth, gameScreen.height);
 }
 
@@ -404,7 +407,7 @@ function gameLoop() {
 }
 
 init();
-
+InitTank();
 window.onload = setInterval(reload_tank, 1000);
 function GameLoopTank() {
     if(STOP) return;
