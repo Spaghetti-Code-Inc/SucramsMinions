@@ -19,7 +19,7 @@ var food; var foodWidth; var foodUp;
 
 // Has game id, -1 means next game up
 //0 is pong, 1 is snake game, 2 is tank game
-currentGame = [2, 2, 2]
+currentGame = [3, 1, 2, 0]
 game = 0;
 
 function MotherLoop(){
@@ -63,6 +63,15 @@ function PlayNext(currentGame){
         intervalID = setInterval(GameLoopTank, 16.66);
         addEventListener("keydown", keyDownHandler_tank);
         addEventListener("keyup", keyUpHandler_tank);
+    }
+    // Racing Game
+    else if (currentGame == 3){
+        InitRace();
+
+        intervalID = setInterval(GameLoopRace, 16.6);
+        addEventListener("keydown", keyDownHandler_race);
+        addEventListener("keyup", keyUpHandler_race);
+
     }
 }
 

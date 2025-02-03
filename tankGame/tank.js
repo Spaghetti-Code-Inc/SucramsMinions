@@ -2,7 +2,7 @@ const TO_RADIANS = Math.PI / 180;
 const TO_DEGREES = 180 / Math.PI;
 function InitTank() {
     //pos and orientation vars
-    p1Pos = [800, 300];
+    p1Pos = [1200, 300];
     p2Pos = [200, 300];
     p1Angle = 180;
     p2Angle = 0;
@@ -405,7 +405,7 @@ function gameLoop() {
 
 init();
 
-window.onload = setInterval(reload, 1000);
+window.onload = setInterval(reload_tank, 1000);
 function GameLoopTank() {
     if(STOP) return;
     ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);

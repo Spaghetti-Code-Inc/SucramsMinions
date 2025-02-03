@@ -1,11 +1,5 @@
 
-const canvas = document.getElementById("gameScreen");
-const ctx = canvas.getContext("2d");
-
-const TO_RADIANS = Math.PI / 180;
-const TO_DEGREES = 180 / Math.PI;
-
-function init() {
+function InitRace() {
     //pos and orientation vars
     p1Pos = [240, 650];
     p2Pos = [240, 590];
@@ -55,7 +49,7 @@ function init() {
     lapTrackerVar = [[0, 0, 0, 0],[0, 0, 0, 0]];       //[[player 1], [player 2]]      [player 1] = [laps, times crossed checker flag, times passed point 1, times passed point 2]
     numLaps = 2;
 
-
+    STOP = false;
     potato = true;
 
     startRace();
@@ -66,7 +60,7 @@ document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
 //function for when user presses down key
-function keyDownHandler(e){		//handles all keys when pressed down
+function keyDownHandler_race(e){		//handles all keys when pressed down
 	if(e.key == "ArrowRight"){
 		p1rightPressed = true;
 	}//end of if stm
@@ -111,7 +105,7 @@ function keyDownHandler(e){		//handles all keys when pressed down
 }//end of function keyDownHandler()
 
 //function to respond to when the arrow keys are up
-function keyUpHandler(e){		//handles all keys when unpressed
+function keyUpHandler_race(e){		//handles all keys when unpressed
 	if(e.key == "ArrowRight"){
 		p1rightPressed = false;
         p1TimePressed = 0;
@@ -772,6 +766,7 @@ function gameOver(){
         ctx.fillStyle = "black";
         ctx.fillText("2 losers?", 500, 350);
     }
+    setTimeout(STOP = true, 1000);
 
 }
 
@@ -784,8 +779,8 @@ function sleep(milliseconds) {
   }
 
 
-function gameLoop() {
-    console.log(potato);
+function GameLoopRace() {
+
     if(potato){
         ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
         drawTrack();
@@ -803,9 +798,11 @@ function gameLoop() {
             p2CanGo[1] = false;
             gameOver();
         }
-        requestAnimationFrame(gameLoop);
+    }
+    else{
+        STOP = True;
+        return;
     }
     
 }
 
-init();
