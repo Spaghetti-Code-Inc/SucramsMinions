@@ -16,7 +16,7 @@ function InitPong(){
         pos: [10, 260],
         width: 20, 
         height: 100,
-        color: "#228B22",
+        color: " #0FFF50",
         speed: 5,
         velocity: 0,
         acceleration: 0.5,
@@ -33,7 +33,7 @@ function InitPong(){
         pos: [1370, 260],
         width: 20,
         height: 100,
-        color: "red",
+        color: " #DC143C",
         speed: 5,
         velocity:0,
         acceleration: 0.5,
@@ -51,7 +51,7 @@ function GameLoopPong(){
     if(STOP) return;
 
     // Draw screen
-    Rect_pong("	#E5E4E2", 0, 0, WIDTH, HEIGHT);
+    Rect_pong("rgb(145, 154, 175)", 0, 0, WIDTH, HEIGHT);
     Rect_pong(p1.color, p1.pos[0], p1.pos[1], p1.width, p1.height);
     Rect_pong(p2.color, p2.pos[0], p2.pos[1], p2.width, p2.height);
     
@@ -74,10 +74,24 @@ function GameLoopPong(){
 }
 
 function Rect_pong(color, x, y, width, height=null){
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 2;
     ctx.fillStyle = color;
     
-    if(height == null) ctx.fillRect(x, y, width, width);
-    else ctx.fillRect(x, y, width, height);
+    if(height == null){ 
+        ctx.fillRect(x, y, width, width)
+        ctx.shadowBlur = 10;
+        ctx.globalAlpha = 0.6;
+        ctx.fillRect(x+1, y+1, width - 2, height - 2)
+        ctx.globalAlpha = 1.0;
+    }
+    else{
+        ctx.fillRect(x, y, width, height);
+        ctx.shadowBlur = 10;
+        ctx.globalAlpha = 0.6;
+        ctx.fillRect(x+2, y+2, width - 4, height - 4)
+        ctx.globalAlpha = 1.0;
+    }
 }
 
 function SquareCollider_pong(x1, y1, w1, x2, y2, w2){
@@ -119,9 +133,9 @@ function BallCollisions_pong(){
     else if(ball.pos[1] <= 0 || ball.pos[1]+ball.width >= HEIGHT){
         if(Math.abs(ball.up) < 1){
             if(ball.up < 0){
-                ball.up -= 0.5;
+                ball.up += 5;
             }else{
-                ball.up += 0.5;
+                ball.up -= 5;
             }
         }
         ball.up *= -1;
