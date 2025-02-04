@@ -33,8 +33,8 @@ function InitTank() {
     bulletSpeed = 5;
     bullets = [];
     numBullets = 10;
-    p1BulletsLeft = numBullets;
-    p2BulletsLeft = numBullets;
+    p1BulletsLeft = 5;
+    p2BulletsLeft = 5;
     numBulletBounces = 1;
 
     //TODO NEED TO CLEAR THIS INTERVAL WHEN THE GAME IS OVER
@@ -259,7 +259,7 @@ function moveBullet_tank(bullet){
 
 function drawBullet_tank(bullX, bullY, numBounces){
     if(numBounces >= 1){
-        ctx.fillStyle = "#343434";
+        ctx.fillStyle = "#E5E4E2";
     }
     else{
         ctx.fillStyle = "grey";
@@ -391,7 +391,7 @@ function goToEndScreen_tank(){
 }
 
 function drawBackground(){
-    ctx.fillStyle = "#E5E4E2";
+    ctx.fillStyle = "#28282B";
     ctx.fillRect(0, 0, gameScreen.clientWidth, gameScreen.height);
 }
 

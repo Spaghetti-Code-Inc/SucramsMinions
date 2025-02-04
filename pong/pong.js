@@ -51,7 +51,7 @@ function GameLoopPong(){
     if(STOP) return;
 
     // Draw screen
-    Rect_pong("rgb(145, 154, 175)", 0, 0, WIDTH, HEIGHT);
+    Rect_pong("#28282B", 0, 0, WIDTH, HEIGHT);
     Rect_pong(p1.color, p1.pos[0], p1.pos[1], p1.width, p1.height);
     Rect_pong(p2.color, p2.pos[0], p2.pos[1], p2.width, p2.height);
     
@@ -79,11 +79,14 @@ function Rect_pong(color, x, y, width, height=null){
     ctx.fillStyle = color;
     
     if(height == null){ 
-        ctx.fillRect(x, y, width, width)
-        ctx.shadowBlur = 10;
+        ctx.fillStyle = "#FFAC1C";
+        ctx.shadowColor = "rgb(255, 203, 89)";
+        ctx.shadowBlur = 20;
+        ctx.fillRect(x, y, width, width);
         ctx.globalAlpha = 0.6;
-        ctx.fillRect(x+1, y+1, width - 2, height - 2)
+        ctx.fillRect(x + 1, y + 1, width - 2, width - 2);
         ctx.globalAlpha = 1.0;
+        ctx.shadowBlur = 0;
     }
     else{
         ctx.fillRect(x, y, width, height);
@@ -272,10 +275,12 @@ function keyDownHandler_pong(e) {
 function keyUpHandler_pong(e) {
     if (e.keyCode == 87 || e.keyCode == 83) { // 'W' or 'S' key
         p1.moving = false;
+        p1.velocity = 0;
     }
 
     if (e.keyCode == 38 || e.keyCode == 40) { // Up or Down arrow
         p2.moving = false;
+        p2.velocity = false;
     }
     if(e.key =="v"){
         p1.whack = false;

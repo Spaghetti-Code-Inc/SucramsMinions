@@ -48,7 +48,7 @@ function GameLoopSnake(){
     if(STOP) return;
 
     // Clear Screen
-    Rect_snake("rgb(216, 216, 216)", 0, 0, WIDTH, HEIGHT)
+    Rect_snake("#28282B", 0, 0, WIDTH, HEIGHT)
 
     // Move Players
     MovePlayer_snake(p1);
@@ -175,18 +175,25 @@ function DrawPlayer_snake(p){
     } catch {}
 
     ctx.strokeStyle = "black";
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 8;
     ctx.strokeRect(p.pos[0], p.pos[1], p.width, p.width);
     Rect_snake(p.color, p.pos[0], p.pos[1], p.width, p.width);
 }
 
 function MovePlayer_snake(p){
+    // var move = 0;
+    // if(p.Fast && p.len > 8){
+    //     move = p.speed*p.FastMultiplier;
+    //     p.len -= 0.2;
+    // } else { move = p.speed; }
+    let move = p.speed;
 
-    var move = 0;
-    if(p.Fast && p.len > 8){
-        move = p.speed*p.FastMultiplier;
+    if (p.Fast && p.len > 8) {
+        move = p.speed * p.FastMultiplier;
         p.len -= 0.2;
-    } else { move = p.speed; }
+    } else if (!p.Fast) {
+        move = p.speed;
+    }
 
 
     if(p.body.length >= p.len){
@@ -248,6 +255,9 @@ function MovePlayer_snake(p){
     // if(p.pos[0]+p.width/2 < 0) p.pos[0] += WIDTH-p.width/2;
     // if(p.pos[1]+p.width/2 < 0) p.pos[1] += HEIGHT-p.width/2;
 }
+
+
+
 
 function FoodSpawner_snake(){
     var num = Math.random();
