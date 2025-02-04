@@ -19,7 +19,7 @@ var food; var foodWidth; var foodUp;
 
 // Has game id, -1 means next game up
 //0 is pong, 1 is snake game, 2 is tank game
-currentGame = [1]
+currentGame = [2]
 game = 0;
 
 function MotherLoop(){

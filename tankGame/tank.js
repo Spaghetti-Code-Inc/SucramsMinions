@@ -129,8 +129,11 @@ function drawPlayers_tank(p1Position, p2Position) {
     ctx.translate(p1Position[0] + Math.cos(p1Angle*TO_RADIANS), p1Position[1] - Math.sin(p1Angle*TO_RADIANS));
     ctx.rotate(p1Angle * TO_RADIANS);
 
-    ctx.fillStyle = 'red';
+    ctx.lineWidth = 2;
+    ctx.fillStyle = '#DC143C';
     ctx.fillRect(-25, -25, 50, 50);
+    ctx.strokeRect(-25, -25, 50, 50);
+    ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.arc(0, 0, 15, 0, 360);
     ctx.stroke();
@@ -144,9 +147,11 @@ function drawPlayers_tank(p1Position, p2Position) {
     //move canvas to match player two rotation, draw, then revert
     ctx.translate(p2Position[0] + Math.cos(p2Angle*TO_RADIANS), p2Position[1] - Math.sin(p2Angle*TO_RADIANS));
     ctx.rotate(p2Angle * TO_RADIANS);
-
-    ctx.fillStyle = 'green';
+    ctx.lineWidth = 2;
+    ctx.fillStyle = 'rgb(18, 196, 66)';
     ctx.fillRect(-25, -25, 50, 50);
+    ctx.strokeRect(-25, -25, 50, 50);
+    ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.arc(0, 0, 15, 0, 360);
     ctx.stroke();
@@ -346,16 +351,16 @@ function collisionDetect_tank(){
 function drawGUI_tank(){
     ctx.font = "20px Arial";
     
-    ctx.fillStyle= 'green';
+    ctx.fillStyle= 'rgba(15, 255, 79, 0.74)';
     ctx.fillRect(10, 20, 20, 20);
-    ctx.fillStyle= 'red';
+    ctx.fillStyle= 'rgba(220, 20, 60, 0.75)';
     ctx.fillRect(gameScreen.clientWidth - 20 - 10, 20, 20, 20);
     for (let i = 0; i < p2BulletsLeft; i++){
-        ctx.fillStyle = 'gray';
+        ctx.fillStyle = 'rgba(136, 136, 136, 0.5)';
         ctx.fillRect(20 * i + 40, 22.5, 10, 15);
     }
     for (let i = 0; i < p1BulletsLeft; i++){
-        ctx.fillStyle = 'gray';
+        ctx.fillStyle = 'rgba(136, 136, 136, 0.5)';
         ctx.fillRect(gameScreen.clientWidth - (20 * i) - 50, 22.5, 10, 15);
     }
 
