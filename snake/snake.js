@@ -7,8 +7,8 @@ function InitSnake(){
         speed: dS,
         pos: [100, 280],
         width: 40,
-        acolor: "lime",
-        color: "green",
+        acolor: "#0FFF50",
+        color: "rgb(18, 196, 66)",
         Up: false,
         Left: false,
         Down: false,
@@ -22,10 +22,10 @@ function InitSnake(){
     
     p2 = {
         speed: dS,
-        pos: [860, 280],
+        pos: [1260, 280],
         width: 40,
-        acolor: "crimson",
-        color: "red",
+        acolor: "#DC143C",
+        color: "rgb(165, 16, 46)",
         Up: false,
         Left: false,
         Down: false,
@@ -34,7 +34,7 @@ function InitSnake(){
         FastMultiplier: 1.5,
         last: "Left",
         len: 20,
-        body: [[880, 280], [900, 280]]
+        body: [[1280, 280], [1300, 280]]
     };
     
     food = [];
@@ -48,7 +48,7 @@ function GameLoopSnake(){
     if(STOP) return;
 
     // Clear Screen
-    Rect_snake("white", 0, 0, WIDTH, HEIGHT)
+    Rect_snake("rgb(216, 216, 216)", 0, 0, WIDTH, HEIGHT)
 
     // Move Players
     MovePlayer_snake(p1);
@@ -175,6 +175,7 @@ function DrawPlayer_snake(p){
     } catch {}
 
     ctx.strokeStyle = "black";
+    ctx.lineWidth = 3;
     ctx.strokeRect(p.pos[0], p.pos[1], p.width, p.width);
     Rect_snake(p.color, p.pos[0], p.pos[1], p.width, p.width);
 }
@@ -280,8 +281,11 @@ function FoodSpawner_snake(){
     var rid = -1;
     for(i = 0; i < food.length; i++){
 
-        Rect_snake("gray", food[i][0], food[i][1], foodWidth, foodWidth);
-        
+        ctx.fillStyle = "#FFAC1C";
+        ctx.shadowColor = "rgb(255, 203, 89)";
+        ctx.shadowBlur = 20;
+        ctx.fillRect(food[i][0], food[i][1], foodWidth, foodWidth)
+        ctx.shadowBlur = 0;
         if(RectangleCollider_snake(food[i][0], food[i][1], foodWidth, p1.pos[0], p1.pos[1], p1.width)){
             rid = i;
             p1.len += foodUp;
@@ -379,18 +383,4 @@ function keyUpHandler_snake(e){
     if(e.keyCode == 77){
         p2.Fast = false;
     }
-
-
-
-    // switch (e.keyCode) {
-    //     case 87: p1.Up = false; break; 
-    //     case 65: p1.Left = false; break;
-    //     case 83: p1.Down = false; break;
-    //     case 68: p1.Right = false; break;
-
-    //     case 38: p2.Up = false; break;
-    //     case 37: p2.Left = false; break;
-    //     case 40: p2.Down = false; break;
-    //     case 39: p2.Right = false; break;
-    // }
 }

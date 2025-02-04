@@ -19,7 +19,7 @@ var food; var foodWidth; var foodUp;
 
 // Has game id, -1 means next game up
 //0 is pong, 1 is snake game, 2 is tank game
-currentGame = [-1, 0, 0, 0]
+currentGame = [1]
 game = 0;
 
 function MotherLoop(){
@@ -37,9 +37,6 @@ function MotherLoop(){
 }
 
 function PlayNext(currentGame){
-    if(currentGame = -1){
-        InitMenu();
-    }
     // Pong
     if(currentGame == 0){
         InitPong();
