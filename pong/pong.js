@@ -186,6 +186,14 @@ function BallCollisions_pong(){
         }
     }
     ball.speed = Math.min(ball.topSpeed, ball.speed);
+
+    //trying to prevent ball getting stuck in cieling and floor
+    if(ball.pos[1] < 0){
+        ball.pos[1]+=4;
+    }
+    else if(ball.pos[1] > HEIGHT-20){
+        ball.pos[1]-=4;
+    }
 }
 
 

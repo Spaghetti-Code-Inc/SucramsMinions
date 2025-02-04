@@ -2,8 +2,8 @@ const TO_RADIANS = Math.PI / 180;
 const TO_DEGREES = 180 / Math.PI;
 function InitTank() {
     //pos and orientation vars
-    p1Pos = [1200, 300];
-    p2Pos = [200, 300];
+    p1Pos = [1200, 325];
+    p2Pos = [200, 325];
     p1Angle = 180;
     p2Angle = 0;
     //movement vars

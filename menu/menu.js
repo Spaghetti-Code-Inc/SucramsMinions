@@ -1,18 +1,22 @@
 function InitMenu(){
     const logo = new Image();
     logo.src = "Assets/classClashLogo.png";
-
+    const button = new Image();
+    button.src = "Assets/buttonFrame.png";
+    const buttonHover = new Image();
+    buttonHover.src = "Assets/buttonFrameHover.png";
     const backgroundImg = new Image();
     backgroundImg.src = "Assets/deskMenuBackground.jpg";
-
-    backgroundImg.onload = function() {
-        drawMenu();
-    };
 
     let mouseX = 0, mouseY = 0;
     let currentMenu = "main";
     let onStart = false;
     let onBack = false;
+
+    backgroundImg.onload = function() {
+        drawMenu();
+    };
+
 
     function drawMenu() {
         ctx.clearRect(0, 0, WIDTH, HEIGHT); // Clear canvas before drawing
@@ -24,10 +28,18 @@ function InitMenu(){
             ctx.drawImage(logo, WIDTH/2 - 250, 30, 500, 400);
             ctx.fillStyle = "#212f3c";
             // button x, button y, button width, button height
-            ctx.fillRect(WIDTH/2 - 100, 450, 200, 80);
-            ctx.fillStyle = "white";
-            ctx.font = "50px Arial";
-            ctx.fillText("START", WIDTH/2 - 75, 508);
+            if(onStart){
+                ctx.drawImage(button, WIDTH/2 -100, 455, 200, 80);
+                ctx.fillStyle = "white";
+                ctx.font = "600 50px Courier New";
+                ctx.fillText("START", WIDTH/2 - 75, 500);
+            }
+            else{
+                ctx.drawImage(buttonHover, WIDTH/2 -100, 450, 200, 80);
+                ctx.fillStyle = "white";
+                ctx.font = "600 50px Courier New";
+                ctx.fillText("START", WIDTH/2 - 75, 495);
+            }
         }
 
         //game setup menu
@@ -67,15 +79,16 @@ function InitMenu(){
                 onBack = false;
             }
         }
-
-        InitMenu();
     });
 
     document.addEventListener("click", (event) => {
         if(onStart && currentMenu == "main"){
             console.log("Start Button Clicked");
-            currentMenu = "setUp";
+            // currentMenu = "setUp";
             onStart = false;
+            setTimeout(1000);
+            ctx.clearRect(0, 0, WIDTH, HEIGHT);
+            MotherLoop();
         }
         if(onBack && currentMenu == "setUp"){
             console.log("Back Button Clicked");

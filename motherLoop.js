@@ -18,8 +18,8 @@ var ds; var dds;
 var food; var foodWidth; var foodUp;
 
 // Has game id, -1 means next game up
-//0 is pong, 1 is snake game, 2 is tank game
-currentGame = [0, 1, 2]
+//0 is pong, 1 is snake game, 2 is tank game, 3 is racing game, 4 is hockey
+currentGame = [4, 0, 1, 2]
 game = 0;
 
 function MotherLoop(){
@@ -29,9 +29,7 @@ function MotherLoop(){
     // Turn off all event listeners
     removeEventListener("keydown", keyDownHandler);
     removeEventListener("keyup", keyUpHandler);
-
-    //////////////////////////////////////// PONG
-
+    
     // Start up game 1
     PlayNext(currentGame[game]);
 }
@@ -72,6 +70,12 @@ function PlayNext(currentGame){
         addEventListener("keyup", keyUpHandler_race);
 
     }
+    else if (currentGame == 4){
+        InitHockey();
+        intervalID = setInterval(GameLoopHockey, 16.6);
+        addEventListener("keydown", keyDownHandler_hockey);
+        addEventListener("keyup", keyUpHandler_hockey);
+    }
 }
 
 function CheckStop(){
@@ -84,4 +88,6 @@ function CheckStop(){
     }
 }
 
-MotherLoop();
+InitMenu();
+// probably should call mothterloop from menu.js
+// MotherLoop();
