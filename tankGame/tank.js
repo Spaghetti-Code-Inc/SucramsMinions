@@ -130,7 +130,7 @@ function drawPlayers_tank(p1Position, p2Position) {
     ctx.rotate(p1Angle * TO_RADIANS);
 
     ctx.lineWidth = 2;
-    ctx.fillStyle = '#DC143C';
+    ctx.fillStyle = ' #DC143C';
     ctx.fillRect(-25, -25, 50, 50);
     ctx.strokeRect(-25, -25, 50, 50);
     ctx.lineWidth = 3;
