@@ -148,10 +148,10 @@ function movePlayer(player) {
             player.fastEndTime = currentTime + 200;
             
 
-            player.boostAcceleration = player.acceleration * 6;
-            player.boostMaxSpeed = player.maxPlayerSpeed * 5;
+            player.boostAcceleration = player.acceleration * 5;
+            player.boostMaxSpeed = player.maxPlayerSpeed * 4;
         }
-        player.fastCooldownEnd = currentTime + 1000;
+        player.fastCooldownEnd = currentTime + 800;
     }
 
     //reset after boost
@@ -211,11 +211,10 @@ function collisionHandler(){
 }
 // these collisions are for the walls
 function handleWallCollision(object) {
-    let ctx = canvas.getContext("2d");
-    let minX = 2 + object.radius;
-    let maxX = 1398 - object.radius;
-    let minY = 2 + object.radius;
-    let maxY = 698 - object.radius;
+    let minX = 2.5 + object.radius;
+    let maxX = 1397.5 - object.radius;
+    let minY = 2.5 + object.radius;
+    let maxY = 697.5 - object.radius;
 
     
     if(object !== puck){
@@ -330,14 +329,16 @@ function playerPuckCollisions(player){
     dx = player.pos[0] - puck.pos[0];
     dy = player.pos[1] - puck.pos[1];
     distance = Math.sqrt(dx * dx + dy * dy);
+    angle = Math.atan2(dy, dx);
+
     if(distance < player.radius + puck.radius){
+        puck.momentumDirection = angle + Math.PI;
+
         if(player.momentumDirection != null){
-            puck.momentumDirection = player.momentumDirection;
             puck.velocity = player.velocity * 0.95;
         }
         else{
             if(puck.velocity != 0){
-                puck.momentumDirection = puck.momentumDirection + Math.PI;
                 puck.velocity *= 0.8;
             }
         }
