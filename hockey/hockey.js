@@ -212,10 +212,10 @@ function collisionHandler(){
 // these collisions are for the walls
 function handleWallCollision(object) {
     let ctx = canvas.getContext("2d");
-    let minX = 5 + object.radius;
-    let maxX = 1395 - object.radius;
-    let minY = 5 + object.radius;
-    let maxY = 695 - object.radius;
+    let minX = 2 + object.radius;
+    let maxX = 1398 - object.radius;
+    let minY = 2 + object.radius;
+    let maxY = 698 - object.radius;
 
     
     if(object !== puck){
@@ -265,22 +265,36 @@ function handleWallCollision(object) {
 
             // Handle puck in corner
             if (object === puck) {
+                // Calculate normal vector of the corner
                 let normalX = object.pos[0] - corner.x;
                 let normalY = object.pos[1] - corner.y;
                 let normalLength = Math.sqrt(normalX * normalX + normalY * normalY);
                 
+                // Normalize normal vector
                 normalX /= normalLength;
                 normalY /= normalLength;
 
+                // Calculate direction of puck's momentum
                 let dirX = Math.cos(object.momentumDirection);
                 let dirY = Math.sin(object.momentumDirection);
                 
+                // Compute dot product between direction and normal
                 let dotProduct = dirX * normalX + dirY * normalY;
-                
+
+                // Reflect momentum direction
                 let reflectX = dirX - 2 * dotProduct * normalX;
                 let reflectY = dirY - 2 * dotProduct * normalY;
 
+                // Update puck's momentum direction
                 object.momentumDirection = Math.atan2(reflectY, reflectX);
+
+                // Adjust puck's position slightly if it's too close to the corner
+                let minDist = object.radius + 1; // Set a buffer distance
+                if (normalLength < minDist) {
+                    // Move puck out slightly from the corner (along normal vector)
+                    object.pos[0] = corner.x + normalX * minDist;
+                    object.pos[1] = corner.y + normalY * minDist;
+                }
             }
         }
         else{
@@ -324,6 +338,7 @@ function playerPuckCollisions(player){
         else{
             if(puck.velocity != 0){
                 puck.momentumDirection = puck.momentumDirection + Math.PI;
+                puck.velocity *= 0.8;
             }
         }
     }
