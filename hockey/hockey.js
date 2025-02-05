@@ -4,7 +4,7 @@ logo.src = "Assets/classClashLogo.png";
 function InitHockey(){
 
     puck = {
-        pos: [500, 300],
+        pos: [WIDTH/2, 350],
         color: " rgba(25, 83, 255, 0.41)",
         velocity: 0,
         momentumDirection: null,
@@ -13,7 +13,7 @@ function InitHockey(){
         maxPuckspeed: 12
     };
     p1 = {
-        pos: [100, 200],
+        pos: [100, 350],
         radius: 40,
         color: "rgb(18, 196, 66)",
         maxPlayerSpeed: 10,
@@ -31,7 +31,7 @@ function InitHockey(){
         fastCooldownEnd: 0,
     };
     p2 = {
-        pos: [1100, 200],
+        pos: [1300, 350],
         radius: 40,
         color: " #DC143C",
         maxPlayerSpeed: 10,
