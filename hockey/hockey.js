@@ -59,6 +59,7 @@ function GameLoopHockey(){
     drawBackground();
     movePlayers();
     collisionHandler();
+    checkGoal(puck);
     drawObjects();
 }
 
@@ -151,7 +152,7 @@ function movePlayer(player) {
             player.boostAcceleration = player.acceleration * 5;
             player.boostMaxSpeed = player.maxPlayerSpeed * 4;
         }
-        player.fastCooldownEnd = currentTime + 800;
+        player.fastCooldownEnd = currentTime + 600;
     }
 
     //reset after boost
@@ -298,10 +299,12 @@ function handleWallCollision(object) {
         }
         else{
             if(object === puck){
-                if (object.pos[0] < minX || object.pos[0] > maxX){
+                //allows puck to go through goal
+                if ((object.pos[0] < minX || object.pos[0] > maxX) && (object.pos[1] < HEIGHT/2 - 100 + object.radius || object.pos[1] > HEIGHT/2 + 100 - object.radius)){
                     puck.momentumDirection = Math.atan2(Math.sin(puck.momentumDirection), -Math.cos(puck.momentumDirection));
                     puck.pos[0] = Math.max(minX, Math.min(maxX, puck.pos[0]));
                 }
+                
                 if (object.pos[1] < minY || object.pos[1] > maxY){
                     puck.momentumDirection = Math.atan2(-Math.sin(puck.momentumDirection), Math.cos(puck.momentumDirection));
                     puck.pos[1] = Math.max(minY, Math.min(maxY, puck.pos[1]));
@@ -346,6 +349,82 @@ function playerPuckCollisions(player){
     movePuck(puck);
 }
 
+function checkGoal(puck){
+    if(puck.pos[0] < 0 - puck.radius){
+        puck.velocity = 0;
+        puck.momentumDirection = null;
+        puck.pos[1] = HEIGHT/2;
+        console.log("red goal");
+        ctx.fillStyle = p2.color;
+        ctx.font = "600 100px Courier New";
+        ctx.fillText("RED GOAL!", WIDTH/2 - 220, 300);
+        setTimeout(() => {
+            puck.pos[0] = WIDTH/2;
+            puck.pos[1] = HEIGHT/2;
+            p1.pos = [100, 350];
+            p1.velocity= 0;
+            p1.momentumDirection= null;
+            p1.Up = false;
+            p1.Down = false;
+            p1.Right = false;
+            p1.Left = false;
+            p1.Fast= false;
+            p1.fastActive= false;
+            p1.fastEndTime= 0;
+            p1.fastCooldownEnd= 0;
+            p2.pos = [1300, 350];
+            p2.velocity= 0;
+            p2.momentumDirection= null;
+            p2.Up = false;
+            p2.Down = false;
+            p2.Right = false;
+            p2.Left = false;
+            p2.Fast= false;
+            p2.fastActive= false;
+            p2.fastEndTime= 0;
+            p2.fastCooldownEnd= 0;
+        }, 2500);
+    }
+    if(puck.pos[0] > WIDTH + puck.radius){
+        puck.velocity = 0;
+        puck.momentumDirection = null;
+        puck.pos[1] = HEIGHT/2;
+        console.log("green goal");
+        ctx.fillStyle = p1.color;
+        ctx.font = "600 100px Courier New";
+        ctx.fillText("GREEN GOAL!", WIDTH/2 - 330, 300);
+        setTimeout(() => {
+            puck.pos[0] = WIDTH/2;
+            puck.pos[1] = HEIGHT/2;
+            puck.velocity = 0;
+            puck.momentumDirection = null;
+            p1.pos = [100, 350];
+            p1.velocity= 0;
+            p1.momentumDirection= null;
+            p1.Up = false;
+            p1.Down = false;
+            p1.Right = false;
+            p1.Left = false;
+            p1.Fast= false;
+            p1.fastActive= false;
+            p1.fastEndTime= 0;
+            p1.fastCooldownEnd= 0;
+            p2.pos = [1300, 350];
+            p2.velocity= 0;
+            p2.momentumDirection= null;
+            p2.Up = false;
+            p2.Down = false;
+            p2.Right = false;
+            p2.Left = false;
+            p2.Fast= false;
+            p2.fastActive= false;
+            p2.fastEndTime= 0;
+            p2.fastCooldownEnd= 0;
+            
+        }, 2500);
+    }
+    
+}
 //key press handlers
 function keyDownHandler_hockey(e){
     switch (e.keyCode) {
