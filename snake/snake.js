@@ -2,6 +2,8 @@ function InitSnake(){
     dS = 7;
     // Change in speed when power up is collected
     ddS = 1;
+
+    hitCooldown = 10; // every quarter a second in the other persons box take one length
     
     p1 = {
         speed: dS,
@@ -17,7 +19,8 @@ function InitSnake(){
         FastMultiplier: 1.5,
         last: "Right",
         len: 20,
-        body: [[80, 280], [60, 280]]
+        body: [[80, 280], [60, 280]],
+        hit: 5
     };
     
     p2 = {
@@ -34,15 +37,14 @@ function InitSnake(){
         FastMultiplier: 1.5,
         last: "Left",
         len: 20,
-        body: [[1280, 280], [1300, 280]]
+        body: [[1280, 280], [1300, 280]],
+        hit: 5
     };
     
     food = [];
     foodWidth = 20;
     foodUp = 10;
 }
-
-
 
 function GameLoopSnake(){
     if(STOP) return;
@@ -107,9 +109,12 @@ function GoToEndingScreen_snake(){
 
 function CollisionDetect_snake(){
 
-   // Heads collide
-   if(RectangleCollider_snake(p1.pos[0], p1.pos[1], p1.width, p2.pos[0], p2.pos[1], p2.width)){
+    // One snake does not have enough length
+    if(p1.len <= 1 || p2.len <= 1){
         STOP = true;
+    
+        removeEventListener("keyup", keyUpHandler_snake);
+        removeEventListener("keydown", keyDownHandler_snake);
 
         if(p1.len > p2.len){
             WINNER = "p1";
@@ -124,14 +129,18 @@ function CollisionDetect_snake(){
         return;
     }
 
+   // Heads collide
+    if(RectangleCollider_snake(p1.pos[0], p1.pos[1], p1.width, p2.pos[0], p2.pos[1], p2.width)){
+        hitLogic(p1);
+        hitLogic(p2);
+        return;
+    }
+
     // P1
     try{
         for(i = 0; i < p2.len; i++){
             if(RectangleCollider_snake(p1.pos[0], p1.pos[1], p1.width, p2.body[i][0], p2.body[i][1], p2.width)){
-                removeEventListener("keyup", keyUpHandler_snake);
-                removeEventListener("keydown", keyDownHandler_snake);
-                STOP = true;
-                return;
+                hitLogic(p1)
             }
         }
     } catch {}
@@ -139,14 +148,25 @@ function CollisionDetect_snake(){
     try{
         for(i = 0; i < p1.len; i++){
             if(RectangleCollider_snake(p2.pos[0], p2.pos[1], p2.width, p1.body[i][0], p1.body[i][1], p1.width)){
-                removeEventListener("keyup", keyUpHandler_snake);
-                removeEventListener("keydown", keyDownHandler_snake);
-                STOP = true;
-                return;
+                hitLogic(p2)
             }
         }
     } catch {}
 }
+
+
+function hitLogic(p){
+    if(p.hit == 0){
+        p.hit = hitCooldown;
+        p.len -= 1;
+    }
+    else {
+        p.hit -= 1;
+    }
+
+    console.log(p.hit);
+}
+
 
 function DrawPlayer_snake(p){
     try{
