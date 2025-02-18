@@ -6,7 +6,7 @@ function InitMenu(){
     const buttonHover = new Image();
     buttonHover.src = "Assets/buttonFrameHover.png";
     const backgroundImg = new Image();
-    backgroundImg.src = "Assets/deskMenuBackground.jpg";
+    backgroundImg.src = "Assets/deskMenuBackgroundCharacter.jpg";
 
     let mouseX = 0, mouseY = 0;
     let currentMenu = "main";

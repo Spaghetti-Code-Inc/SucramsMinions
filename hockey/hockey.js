@@ -1,6 +1,3 @@
-const logo = new Image();
-logo.src = "Assets/classClashLogo.png";
-
 function InitHockey(){
 
     puck = {
@@ -77,14 +74,14 @@ function drawBackground(){
     // black border
     ctx.lineWidth = 8;
     ctx.beginPath();
-    ctx.arc(100, 600, 100, Math.PI/2, Math.PI);
+    ctx.arc(100, 599, 100, Math.PI/2, Math.PI);
     ctx.stroke();
     ctx.fillRect(100, 695, 1200, 5)
     ctx.arc(100, 100, 100, Math.PI, 1.5*Math.PI);
     ctx.stroke();
     ctx.arc(1300, 100, 100, 1.5*Math.PI, 2*Math.PI);
     ctx.stroke();
-    ctx.arc(1300, 600, 100, 0, 0.5*Math.PI);
+    ctx.arc(1300, 599, 100, 0, 0.5*Math.PI);
     ctx.stroke();
     ctx.closePath();
 }
@@ -235,15 +232,6 @@ function handleWallCollision(object) {
     ];
     let cornerRadius = 100;
 
-    // Draw  corners for visualization
-    // ctx.fillStyle = "blue";
-    // for (let corner of corners) {
-    //     ctx.beginPath();
-    //     ctx.arc(corner.x, corner.y, cornerRadius, corner.startAngle, corner.endAngle);
-    //     ctx.lineTo(corner.x, corner.y); 
-    //     ctx.fill();
-    // }
-
     for (let corner of corners) {
         let dx = object.pos[0] - corner.x;
         let dy = object.pos[1] - corner.y;
@@ -260,8 +248,10 @@ function handleWallCollision(object) {
             (corner.quadrant === 3 && angle >= corner.startAngle && angle <= corner.endAngle)) {
             
             // Push object back inside bounds
-            object.pos[0] = corner.x + Math.cos(angle) * (cornerRadius - object.radius);
-            object.pos[1] = corner.y + Math.sin(angle) * (cornerRadius - object.radius);
+            if(object !== puck && distance < object.radius * 2 && distance >= 60){
+                object.pos[0] = corner.x + Math.cos(angle) * (cornerRadius - object.radius);
+                object.pos[1] = corner.y + Math.sin(angle) * (cornerRadius - object.radius);
+            }
 
             // Handle puck in corner
             if (object === puck) {
@@ -270,27 +260,24 @@ function handleWallCollision(object) {
                 let normalY = object.pos[1] - corner.y;
                 let normalLength = Math.sqrt(normalX * normalX + normalY * normalY);
                 
-                // Normalize normal vector
+                // normalize normal vector
                 normalX /= normalLength;
                 normalY /= normalLength;
 
-                // Calculate direction of puck's momentum
+                // direction of pucks momentum
                 let dirX = Math.cos(object.momentumDirection);
                 let dirY = Math.sin(object.momentumDirection);
                 
-                // Compute dot product between direction and normal
                 let dotProduct = dirX * normalX + dirY * normalY;
 
-                // Reflect momentum direction
                 let reflectX = dirX - 2 * dotProduct * normalX;
                 let reflectY = dirY - 2 * dotProduct * normalY;
 
-                // Update puck's momentum direction
+                // Update momentum direction
                 object.momentumDirection = Math.atan2(reflectY, reflectX);
 
-                // Adjust puck's position slightly if it's too close to the corner
-                let minDist = object.radius + 1; // Set a buffer distance
-                if (normalLength < minDist) {
+                let minDist = object.radius;
+                if (normalLength < minDist && distance > 20) {
                     // Move puck out slightly from the corner (along normal vector)
                     object.pos[0] = corner.x + normalX * minDist;
                     object.pos[1] = corner.y + normalY * minDist;
