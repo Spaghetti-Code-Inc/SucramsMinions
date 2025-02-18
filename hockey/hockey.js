@@ -12,7 +12,7 @@ function InitHockey(){
     p1 = {
         pos: [100, 350],
         radius: 40,
-        color: "rgb(18, 196, 66)",
+        color: " #DC143C",
         maxPlayerSpeed: 10,
         velocity: 0,
         acceleration: 0.5,
@@ -30,7 +30,7 @@ function InitHockey(){
     p2 = {
         pos: [1300, 350],
         radius: 40,
-        color: " #DC143C",
+        color: "rgb(18, 196, 66)",
         maxPlayerSpeed: 10,
         velocity: 0,
         acceleration: 0.5,
@@ -208,22 +208,126 @@ function collisionHandler(){
     playerPuckCollisions(p2);
 }
 // these collisions are for the walls
+// function handleWallCollision(object) {
+//     let minX = 2.5 + object.radius;
+//     let maxX = 1397.5 - object.radius;
+//     let minY = 2.5 + object.radius;
+//     let maxY = 697.5 - object.radius;
+
+    
+//     if(object !== puck){
+//         // Keep players in bounds
+//         if (object.pos[0] < minX) object.pos[0] = minX;
+//         if (object.pos[0] > maxX) object.pos[0] = maxX;
+//         if (object.pos[1] < minY) object.pos[1] = minY;
+//         if (object.pos[1] > maxY) object.pos[1] = maxY;
+//     }
+
+//     //rounded corners
+//     let corners = [
+//         { x: 105, y: 105, startAngle: Math.PI, endAngle: 1.5 * Math.PI, quadrant: 1 },
+//         { x: 1295, y: 105, startAngle: 1.5 * Math.PI, endAngle: 0, quadrant: 2 },
+//         { x: 105, y: 595, startAngle: 0.5 * Math.PI, endAngle: Math.PI, quadrant: 3 },
+//         { x: 1295, y: 595, startAngle: 0, endAngle: Math.PI / 2, quadrant: 4 }
+//     ];
+//     let cornerRadius = 100;
+
+//     for (let corner of corners) {
+//         let dx = object.pos[0] - corner.x;
+//         let dy = object.pos[1] - corner.y;
+//         let distance = Math.sqrt(dx * dx + dy * dy);
+
+//         let angle = Math.atan2(dy, dx); // Angle from center of the circle to the object
+        
+//         // if(corner.quadrant === 2){
+//         //     console.log("Angle: " + angle + " | startAngle: " + corner.startAngle + " | endAngle: " + corner.endAngle + " | distance: " + distance);
+//         // }
+//         if ((corner.quadrant === 1 && angle <= corner.startAngle - corner.endAngle) ||
+//             (corner.quadrant === 2 && angle <= -0.2 && angle >= -1.8) ||
+//             (corner.quadrant === 4 && angle >= corner.startAngle && angle <= corner.endAngle) ||
+//             (corner.quadrant === 3 && angle >= corner.startAngle && angle <= corner.endAngle)) {
+            
+//             // Push object back inside bounds
+//             if(object !== puck && distance < object.radius * 2 && distance >= 60){
+//                 object.pos[0] = corner.x + Math.cos(angle) * (cornerRadius - object.radius);
+//                 object.pos[1] = corner.y + Math.sin(angle) * (cornerRadius - object.radius);
+//             }
+
+//             // Handle puck in corner
+//             if (object === puck) {
+//                 // Calculate normal vector of the corner
+//                 let normalX = object.pos[0] - corner.x;
+//                 let normalY = object.pos[1] - corner.y;
+//                 let normalLength = Math.sqrt(normalX * normalX + normalY * normalY);
+                
+//                 // normalize normal vector
+//                 normalX /= normalLength;
+//                 normalY /= normalLength;
+
+//                 // direction of pucks momentum
+//                 let dirX = Math.cos(object.momentumDirection);
+//                 let dirY = Math.sin(object.momentumDirection);
+                
+//                 let dotProduct = dirX * normalX + dirY * normalY;
+
+//                 let reflectX = dirX - 2 * dotProduct * normalX;
+//                 let reflectY = dirY - 2 * dotProduct * normalY;
+
+//                 // Update momentum direction
+//                 object.momentumDirection = Math.atan2(reflectY, reflectX);
+
+//                 let minDist = object.radius;
+//                 if (normalLength < minDist && distance > 20) {
+//                     // Move puck out slightly from the corner (along normal vector)
+//                     object.pos[0] = corner.x + normalX * minDist;
+//                     object.pos[1] = corner.y + normalY * minDist;
+//                 }
+//             }
+//         }
+//         else{
+//             if(object === puck){
+//                 //allows puck to go through goal
+//                 if ((object.pos[0] < minX || object.pos[0] > maxX) && (object.pos[1] < HEIGHT/2 - 100 + object.radius || object.pos[1] > HEIGHT/2 + 100 - object.radius)){
+//                     puck.momentumDirection = Math.atan2(Math.sin(puck.momentumDirection), -Math.cos(puck.momentumDirection));
+//                     puck.pos[0] = Math.max(minX, Math.min(maxX, puck.pos[0]));
+//                 }
+                
+//                 if (object.pos[1] < minY || object.pos[1] > maxY){
+//                     puck.momentumDirection = Math.atan2(-Math.sin(puck.momentumDirection), Math.cos(puck.momentumDirection));
+//                     puck.pos[1] = Math.max(minY, Math.min(maxY, puck.pos[1]));
+//                 }
+//             }
+//         }
+
+//     }
+
+//     //keep player on their own side
+//     if(object === p1){
+//         if(object.pos[0] + object.radius >= WIDTH / 2){
+//             object.pos[0] = WIDTH/2 - object.radius - 5;
+//         }
+//     }
+//     if(object === p2){
+//         if(object.pos[0] - object.radius <= WIDTH / 2){
+//             object.pos[0] = WIDTH/2 + object.radius + 5;
+//         }
+//     }
+    
+// }
 function handleWallCollision(object) {
     let minX = 2.5 + object.radius;
     let maxX = 1397.5 - object.radius;
     let minY = 2.5 + object.radius;
     let maxY = 697.5 - object.radius;
 
-    
-    if(object !== puck){
-        // Keep players in bounds
+    if (object !== puck) {
         if (object.pos[0] < minX) object.pos[0] = minX;
         if (object.pos[0] > maxX) object.pos[0] = maxX;
         if (object.pos[1] < minY) object.pos[1] = minY;
         if (object.pos[1] > maxY) object.pos[1] = maxY;
     }
 
-    //rounded corners
+    // Rounded corners
     let corners = [
         { x: 105, y: 105, startAngle: Math.PI, endAngle: 1.5 * Math.PI, quadrant: 1 },
         { x: 1295, y: 105, startAngle: 1.5 * Math.PI, endAngle: 0, quadrant: 2 },
@@ -236,35 +340,27 @@ function handleWallCollision(object) {
         let dx = object.pos[0] - corner.x;
         let dy = object.pos[1] - corner.y;
         let distance = Math.sqrt(dx * dx + dy * dy);
+        let angle = Math.atan2(dy, dx);
 
-        let angle = Math.atan2(dy, dx); // Angle from center of the circle to the object
-        
-        // if(corner.quadrant === 2){
-        //     console.log("Angle: " + angle + " | startAngle: " + corner.startAngle + " | endAngle: " + corner.endAngle + " | distance: " + distance);
-        // }
         if ((corner.quadrant === 1 && angle <= corner.startAngle - corner.endAngle) ||
             (corner.quadrant === 2 && angle <= -0.2 && angle >= -1.8) ||
             (corner.quadrant === 4 && angle >= corner.startAngle && angle <= corner.endAngle) ||
             (corner.quadrant === 3 && angle >= corner.startAngle && angle <= corner.endAngle)) {
             
-            // Push object back inside bounds
-            if(object !== puck && distance < object.radius * 2 && distance >= 60){
+            if (object !== puck && distance < object.radius * 2 && distance >= 60) {
                 object.pos[0] = corner.x + Math.cos(angle) * (cornerRadius - object.radius);
                 object.pos[1] = corner.y + Math.sin(angle) * (cornerRadius - object.radius);
             }
 
-            // Handle puck in corner
+            // handle puck in corner
             if (object === puck) {
-                // Calculate normal vector of the corner
                 let normalX = object.pos[0] - corner.x;
                 let normalY = object.pos[1] - corner.y;
                 let normalLength = Math.sqrt(normalX * normalX + normalY * normalY);
                 
-                // normalize normal vector
                 normalX /= normalLength;
                 normalY /= normalLength;
 
-                // direction of pucks momentum
                 let dirX = Math.cos(object.momentumDirection);
                 let dirY = Math.sin(object.momentumDirection);
                 
@@ -273,46 +369,36 @@ function handleWallCollision(object) {
                 let reflectX = dirX - 2 * dotProduct * normalX;
                 let reflectY = dirY - 2 * dotProduct * normalY;
 
-                // Update momentum direction
                 object.momentumDirection = Math.atan2(reflectY, reflectX);
 
-                let minDist = object.radius;
-                if (normalLength < minDist && distance > 20) {
-                    // Move puck out slightly from the corner (along normal vector)
+                let minDist = object.radius + 5;
+                if (normalLength < minDist) {
                     object.pos[0] = corner.x + normalX * minDist;
                     object.pos[1] = corner.y + normalY * minDist;
                 }
             }
-        }
-        else{
-            if(object === puck){
-                //allows puck to go through goal
-                if ((object.pos[0] < minX || object.pos[0] > maxX) && (object.pos[1] < HEIGHT/2 - 100 + object.radius || object.pos[1] > HEIGHT/2 + 100 - object.radius)){
-                    puck.momentumDirection = Math.atan2(Math.sin(puck.momentumDirection), -Math.cos(puck.momentumDirection));
-                    puck.pos[0] = Math.max(minX, Math.min(maxX, puck.pos[0]));
-                }
-                
-                if (object.pos[1] < minY || object.pos[1] > maxY){
-                    puck.momentumDirection = Math.atan2(-Math.sin(puck.momentumDirection), Math.cos(puck.momentumDirection));
-                    puck.pos[1] = Math.max(minY, Math.min(maxY, puck.pos[1]));
-                }
+        } else if (object === puck) {
+            
+            if ((object.pos[0] < minX || object.pos[0] > maxX) && 
+                (object.pos[1] < HEIGHT / 2 - 100 + object.radius || object.pos[1] > HEIGHT / 2 + 100 - object.radius)) {
+                puck.momentumDirection = Math.atan2(Math.sin(puck.momentumDirection), -Math.cos(puck.momentumDirection));
+                puck.pos[0] = Math.max(minX, Math.min(maxX, puck.pos[0]));
+            }
+
+            if (object.pos[1] < minY || object.pos[1] > maxY) {
+                puck.momentumDirection = Math.atan2(-Math.sin(puck.momentumDirection), Math.cos(puck.momentumDirection));
+                puck.pos[1] = Math.max(minY, Math.min(maxY, puck.pos[1]));
             }
         }
-
     }
 
-    //keep player on their own side
-    if(object === p1){
-        if(object.pos[0] + object.radius >= WIDTH / 2){
-            object.pos[0] = WIDTH/2 - object.radius - 5;
-        }
+    // Keep players on their own side
+    if (object === p1 && object.pos[0] + object.radius >= WIDTH / 2) {
+        object.pos[0] = WIDTH / 2 - object.radius - 5;
     }
-    if(object === p2){
-        if(object.pos[0] - object.radius <= WIDTH / 2){
-            object.pos[0] = WIDTH/2 + object.radius + 5;
-        }
+    if (object === p2 && object.pos[0] - object.radius <= WIDTH / 2) {
+        object.pos[0] = WIDTH / 2 + object.radius + 5;
     }
-    
 }
 
 function playerPuckCollisions(player){
@@ -341,10 +427,10 @@ function checkGoal(puck){
         puck.velocity = 0;
         puck.momentumDirection = null;
         puck.pos[1] = HEIGHT/2;
-        console.log("red goal");
+        console.log("p2 goal");
         ctx.fillStyle = p2.color;
         ctx.font = "600 100px Courier New";
-        ctx.fillText("RED GOAL!", WIDTH/2 - 220, 300);
+        ctx.fillText("GOAL!", WIDTH/2 - 120, 300);
         setTimeout(() => {
             puck.pos[0] = WIDTH/2;
             puck.pos[1] = HEIGHT/2;
@@ -376,10 +462,10 @@ function checkGoal(puck){
         puck.velocity = 0;
         puck.momentumDirection = null;
         puck.pos[1] = HEIGHT/2;
-        console.log("green goal");
+        console.log("p1 goal");
         ctx.fillStyle = p1.color;
         ctx.font = "600 100px Courier New";
-        ctx.fillText("GREEN GOAL!", WIDTH/2 - 330, 300);
+        ctx.fillText("GOAL!", WIDTH/2 - 120, 300);
         setTimeout(() => {
             puck.pos[0] = WIDTH/2;
             puck.pos[1] = HEIGHT/2;

@@ -130,7 +130,7 @@ function drawPlayers_tank(p1Position, p2Position) {
     ctx.rotate(p1Angle * TO_RADIANS);
 
     ctx.lineWidth = 2;
-    ctx.fillStyle = ' #DC143C';
+    ctx.fillStyle = 'rgb(18, 196, 66)';
     ctx.fillRect(-25, -25, 50, 50);
     ctx.strokeRect(-25, -25, 50, 50);
     ctx.lineWidth = 3;
@@ -148,7 +148,7 @@ function drawPlayers_tank(p1Position, p2Position) {
     ctx.translate(p2Position[0] + Math.cos(p2Angle*TO_RADIANS), p2Position[1] - Math.sin(p2Angle*TO_RADIANS));
     ctx.rotate(p2Angle * TO_RADIANS);
     ctx.lineWidth = 2;
-    ctx.fillStyle = 'rgb(18, 196, 66)';
+    ctx.fillStyle = ' #DC143C';
     ctx.fillRect(-25, -25, 50, 50);
     ctx.strokeRect(-25, -25, 50, 50);
     ctx.lineWidth = 3;
@@ -378,11 +378,11 @@ function goToEndScreen_tank(){
     ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
     if(!p1Alive && p2Alive){
         ctx.font = "50px Arial";
-        ctx.fillText("Red Hit", 400, 300);
+        ctx.fillText("Green Hit", 400, 300);
     }
     else if(!p2Alive && p1Alive){
         ctx.font = "50px Arial";
-        ctx.fillText("Green Hit", 400, 300);
+        ctx.fillText("Red Hit", 400, 300);
     }
     else{
         ctx.font = "50px Arial";
