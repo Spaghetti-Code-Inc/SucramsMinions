@@ -42,8 +42,6 @@ function InitTank() {
     
 }
 
-document.addEventListener("keydown", keyDownHandler, false);
-document.addEventListener("keyup", keyUpHandler, false);
 
 //function for when user presses down key
 function keyDownHandler_tank(e){		//handles all keys when pressed down
@@ -351,9 +349,9 @@ function collisionDetect_tank(){
 function drawGUI_tank(){
     ctx.font = "20px Arial";
     
-    ctx.fillStyle= 'rgba(15, 255, 79, 0.74)';
-    ctx.fillRect(10, 20, 20, 20);
     ctx.fillStyle= 'rgba(220, 20, 60, 0.75)';
+    ctx.fillRect(10, 20, 20, 20);
+    ctx.fillStyle= 'rgba(15, 255, 79, 0.74)';
     ctx.fillRect(gameScreen.clientWidth - 20 - 10, 20, 20, 20);
     for (let i = 0; i < p2BulletsLeft; i++){
         ctx.fillStyle = 'rgba(136, 136, 136, 0.5)';
@@ -366,11 +364,11 @@ function drawGUI_tank(){
 
     if(!p1Alive){
         ctx.font = "50px Arial";
-        ctx.fillText("Red Hit", 400, 300);
+        ctx.fillText("Green Hit", 580, 300);
     }
     if(!p2Alive){
         ctx.font = "50px Arial";
-        ctx.fillText("Green Hit", 400, 300);
+        ctx.fillText("Red Hit", 600, 300);
     }
 }
 
@@ -378,11 +376,11 @@ function goToEndScreen_tank(){
     ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
     if(!p1Alive && p2Alive){
         ctx.font = "50px Arial";
-        ctx.fillText("Green Hit", 400, 300);
+        ctx.fillText("Red Hit", 700, 300);
     }
     else if(!p2Alive && p1Alive){
         ctx.font = "50px Arial";
-        ctx.fillText("Red Hit", 400, 300);
+        ctx.fillText("Green Hit", 700, 300);
     }
     else{
         ctx.font = "50px Arial";
@@ -390,15 +388,13 @@ function goToEndScreen_tank(){
     }
 }
 
-function drawBackground(){
-    ctx.fillStyle = "#28282B";
-    ctx.fillRect(0, 0, gameScreen.clientWidth, gameScreen.height);
-}
 
 function gameLoop() {
     if(p1Alive && p2Alive){
         ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
-        drawBackground();
+        ctx.fillStyle = "#28282B";
+        ctx.fillRect(0, 0, gameScreen.clientWidth, gameScreen.height);
+
         collisionDetect();
         deltaPlayer();
         bulletHander();
@@ -411,13 +407,15 @@ function gameLoop() {
     }
 }
 
-init();
+// init();
 InitTank();
 window.onload = setInterval(reload_tank, 1000);
 function GameLoopTank() {
     if(STOP) return;
     ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
-    drawBackground();
+    ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
+    ctx.fillStyle = "#28282B";
+    ctx.fillRect(0, 0, gameScreen.clientWidth, gameScreen.height);
     collisionDetect_tank();
     deltaPlayer_tank();
     bulletHander_tank();

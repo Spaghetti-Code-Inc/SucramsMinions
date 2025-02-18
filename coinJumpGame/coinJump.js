@@ -1,14 +1,11 @@
-
-
-
-function init() {
+function InitCoinjump() {
     //Player 1 vars
-    p1PosX = 500;
-    p1PosY = 500;
+    p1PosX = 1250;
+    p1PosY = 600;
     p1width = 50;
-    p1Color = 'red';
+    p1Color = 'green';
     p1Sprite = new Image(p1width, p1width);
-    p1Sprite.src = 'Assets\\redGuy4.png';
+    p1Sprite.src = 'Assets\\greenGuy2.png';
     p1leftPressed = false;
     p1rightPressed = false;
     //jump vars
@@ -24,11 +21,11 @@ function init() {
 
     //player 2 vars
     p2PosX = 200;
-    p2PosY = 500;
+    p2PosY = 600;
     p2width = 50;
-    p2Color = 'green';
+    p2Color = 'red';
     p2Sprite = new Image(p2width, p2width);
-    p2Sprite.src = 'Assets\\greenGuy2.png';
+    p2Sprite.src = 'Assets\\redGuy2.png';
     p2leftPressed = false;
     p2rightPressed = false;
     //jump vars
@@ -43,12 +40,12 @@ function init() {
     p2Coins = 0;
 
     //scene vars
-    floorY = 550;
+    floorY = 600;
     
     //world physics vars
     drag = 0.2;
     acceleration = 0.08;
-    jumpPower = -6;						//variable to set jump power for player
+    jumpPower = -8;						//variable to set jump power for player
     gravityConstant = 0.2;				//variable to set gravity force
     gravityPower = 10;					//variable to set gravity power
     particleAccelerator = false;
@@ -60,12 +57,8 @@ function init() {
 }
 
 
-
-document.addEventListener("keydown", keyDownHandler, false);
-document.addEventListener("keyup", keyUpHandler, false);
-
 //function for when user presses down key
-function keyDownHandler(e){		//handles all keys when pressed down
+function keyDownHandler_coinjump(e){		//handles all keys when pressed down
 	if(e.key == "ArrowRight"){
 		p1rightPressed = true;
 	}//end of if stm
@@ -91,7 +84,7 @@ function keyDownHandler(e){		//handles all keys when pressed down
 }//end of function keyDownHandler()
 
 //function to respond to when the arrow keys are up
-function keyUpHandler(e){		//handles all keys when unpressed
+function keyUpHandler_coinjump(e){		//handles all keys when unpressed
 	if(e.key == "ArrowRight"){
 		p1rightPressed = false;
 	}//end of if stm
@@ -282,6 +275,31 @@ function updatePlayerPos () {
         }
         
     }
+
+    // Collision detection between players
+    if (
+        p1PosX < p2PosX + p2width &&
+        p1PosX + p1width > p2PosX &&
+        p1PosY < p2PosY + p2width &&
+        p1PosY + p1width > p2PosY
+    ) {
+        // Horizontal collision - swap velocities for bounce effect
+        if (p1PosX < p2PosX) {
+            let tempVel = p1Velocity;
+            p1Velocity = p2Velocity;
+            p2Velocity = tempVel;
+            p1PosX -= 5;
+            p2PosX += 5;
+        } else {
+            let tempVel = p2Velocity;
+            p2Velocity = p1Velocity;
+            p1Velocity = tempVel;
+            p1PosX += 5;
+            p2PosX -= 5;
+        }
+
+    }
+
     checkCoinCollision();
 }
 
@@ -293,7 +311,7 @@ function checkJump() {
 	if (p1jumping) {
         console.log("p1jump");
 		p1deltaY = p1jumpVelocity;
-        if(p1deltaY > 10 && p1PosY > 490){
+        if(p1deltaY > 10 && p1PosY > gameScreen.height - 110){
             console.log("p1landed");
             p1jumping = false;
             p1jumpPressed = false;
@@ -314,7 +332,7 @@ function checkJump() {
 	if (p2jumping) {
         console.log("p2jump");
 		p2deltaY = p2jumpVelocity;
-        if(p2deltaY > 10 && p2PosY > 490){
+        if(p2deltaY > 10 && p2PosY > gameScreen.height - 110){
             console.log("p2landed");
             p2jumping = false;
             p2jumpPressed = false;
@@ -338,7 +356,7 @@ function doGravity() {
 	}
 	else {
 		gravityPower = gravityPower + gravityConstant;
-		if (p1PosY == 500+p1width) {
+		if (p1PosY == 600+p1width) {
 			gravityPower = 0;
 		}
 		else if(p1PosY<=350){
@@ -352,7 +370,7 @@ function doGravity() {
 	}
 	else {
 		gravityPower = gravityPower + gravityConstant;
-		if (p2PosY == 500+p2width) {
+		if (p2PosY == 600+p2width) {
 			gravityPower = 0;
 		}
 		else if(p2PosY<=350){
@@ -363,10 +381,11 @@ function doGravity() {
 
 
 function drawCoin(coinX, coinY){
-    ctx.strokeStyle = "black";
-    ctx.strokeRect(Number(coinX), Number(coinY), 30, 30);
-    ctx.fillStyle = "yellow";
-    ctx.fillRect(Number(coinX), Number(coinY), 30, 30);
+    ctx.fillStyle = "#FFAC1C";
+        ctx.shadowColor = "rgb(255, 203, 89)";
+        ctx.shadowBlur = 20;
+        ctx.fillRect(Number(coinX), Number(coinY), 30, 30)
+        ctx.shadowBlur = 0;
     
     
 }
@@ -375,7 +394,7 @@ function generateCoins() {
     
     coins[0] = [];
     coins[0][0] = Math.random()*(gameScreen.width - 40);
-    coins[0][1] = Math.random()*(gameScreen.height-80 - 100) + 70;
+    coins[0][1] = Math.random()*(gameScreen.height- 280) + 170;
     
 }
 
@@ -390,15 +409,15 @@ function drawPlayer (posX, posY, width, color) {
     
 }
 
-function drawBackground() {
-    ctx.fillStyle = 'lightblue';
+function drawBackgroundCoin() {
+    ctx.fillStyle = '#28282B';
     ctx.fillRect(0, 0, gameScreen.width, gameScreen.height);
-    ctx.fillStyle = 'green';
-    ctx.fillRect(0, 550, 1200, 50)
-    ctx.fillStyle = "black";
-    ctx.font = "20px Arial";
-    ctx.fillText("Green: " + p2Coins, 10, 50);
-    ctx.fillText("Red: " + p1Coins, 900, 50);
+    ctx.fillStyle = 'rgb(193, 193, 193)';
+    ctx.fillRect(0, gameScreen.height-50, gameScreen.width, 50)
+    ctx.fillStyle = "white";
+    ctx.font = "30px Monospace";
+    ctx.fillText("Green: " + p2Coins, 50, 50);
+    ctx.fillText("Red: " + p1Coins, 1200, 50);
 }
 
 function checkCoinCollision() {
@@ -414,12 +433,17 @@ function checkCoinCollision() {
             p2Coins++;
         }
     }
+    if(p1Coins >= 5 || p2Coins >= 5) {
+        STOP = true;
+    }
 }
 
 
-function gameLoop() {
+function GameLoopCoinjump() {
+    if (STOP) return;
+
     ctx.clearRect(0, 0, gameScreen.width, gameScreen.height);
-    drawBackground();
+    drawBackgroundCoin();
     updatePlayerPos();
     checkCoinCollision();
     checkJump();

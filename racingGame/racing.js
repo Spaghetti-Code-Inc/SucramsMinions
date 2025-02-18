@@ -10,7 +10,7 @@ function InitRace() {
     p1leftPressed = false;
     p1upPressed = false;
     p1downPressed = false;
-    p1CanGo = [true, true];          //variable for if space in front and behind is clear    [front clear, back clear]
+    p1CanGo = [false, false];          //variable for if space in front and behind is clear    [front clear, back clear]
     p1TimePressed = 0;          //variable for rotation acceleration to increase aim potential
     p1drift = false;
     p1InDrift = false;
@@ -22,7 +22,7 @@ function InitRace() {
     p2leftPressed = false;
     p2upPressed = false;
     p2downPressed = false;
-    p2CanGo = [true, true];         //variable for if space in front and behind is clear    [front clear, back clear]
+    p2CanGo = [false, false];         //variable for if space in front and behind is clear    [front clear, back clear]
     p2TimePressed = 0;
     p2drift = false;
     p2InDrift = false
@@ -31,7 +31,7 @@ function InitRace() {
 
     //other vars
     explosion = new Image(500, 292);
-    explosion.src = 'Assets\\explosionSpriteSheet.png';
+    explosion.src = 'racingGame\\Assets\\explosionSpriteSheet.png';
 
     //setting vars
     p1rotateSpeed = 1;
@@ -44,62 +44,61 @@ function InitRace() {
     collumn2 = 0;
     row2 = 0;
     display2 = true;
-    lightColors = ["white", "white", "white"];
+    lightColors = ["grey", "grey", "grey"];
 
     lapTrackerVar = [[0, 0, 0, 0],[0, 0, 0, 0]];       //[[player 1], [player 2]]      [player 1] = [laps, times crossed checker flag, times passed point 1, times passed point 2]
     numLaps = 2;
 
     STOP = false;
     potato = true;
+    go = false;
 
     startRace();
     
 }
 
-document.addEventListener("keydown", keyDownHandler, false);
-document.addEventListener("keyup", keyUpHandler, false);
 
 //function for when user presses down key
 function keyDownHandler_race(e){		//handles all keys when pressed down
-	if(e.key == "ArrowRight"){
+	if(e.key == "ArrowRight" && go){
 		p1rightPressed = true;
 	}//end of if stm
-    else if(e.key == "ArrowLeft"){
+    else if(e.key == "ArrowLeft" && go){
             p1leftPressed = true;
     }//end of else if stm
 
-    if(e.key == "d"){
+    if(e.key == "d" && go){
 		p2rightPressed = true;
 	}//end of if stm
-    else if(e.key == "a"){
+    else if(e.key == "a" && go){
         p2leftPressed = true;
     }//end of else if stm
 	
 	
-	if (e.key == "ArrowUp") {
+	if (e.key == "ArrowUp" && go) {
        p1upPressed = true;
 	}//end of else if stm
 
-	if (e.key =="w") {
+	if (e.key =="w" && go) {
         p2upPressed = true;
     }
 
-    if (e.key == "ArrowDown") {
+    if (e.key == "ArrowDown" && go) {
         p1downPressed = true;
      }//end of else if stm
  
-     if (e.key =="s") {
+     if (e.key =="s" && go) {
          p2downPressed = true;
      }
 
      //drifting
-     if(e.key =="m"){
+     if(e.key =="m" && go){
         p1DriftAngle = p1Angle;
         p1drift = true;
         p1InDrift = true;
         
      }
-     if(e.key =="v"){
+     if(e.key =="v" && go){
         p2drift = true;
      }
 }//end of function keyDownHandler()
@@ -369,11 +368,11 @@ function deltaPlayer(){
 function drawTrack(){
     //about to be some very laborious code
     //main grass color
-    ctx.fillStyle = '#96be25';
+    ctx.fillStyle = '#3f9b0b';
     ctx.fillRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
 
     //road layout ahhh
-    ctx.fillStyle = '#8a9395';
+    ctx.fillStyle = '#28282B';
     ctx.fillRect(30, 540, 1300, 180);
     ctx.fillRect(1200, 40, 180, 600);
     ctx.fillRect(900, 30, 300, 180);
@@ -683,10 +682,10 @@ function drawCountdown(){
         ctx.stroke();
         ctx.closePath();
         
-        ctx.font = "30px Arial";
-        ctx.fillStyle = "green";
+        ctx.font = "30px Monospace";
+        ctx.fillStyle = "white";
         ctx.fillText("GREEN LAPS LEFT: " + (numLaps-lapTrackerVar[1][0]), 50, 25);
-        ctx.fillStyle = "red";
+        
         ctx.fillText("RED LAPS LEFT: " + (numLaps-lapTrackerVar[0][0]), 1080, 25);
     }
     
@@ -711,6 +710,7 @@ function doLights(){
         lightColors[0] = "#0FFF50";
         lightColors[1] = "#0FFF50";
         lightColors[2] = "#0FFF50";
+        go = true;
     }
     drawCountdown();
     
@@ -730,7 +730,7 @@ function startRace(){
 
     setTimeout(() => {doLights();}, 4000);
     
-    setTimeout(() => {gameLoop();}, 4000);
+    setTimeout(() => {GameLoopRace();}, 4000);
 }
 
 function gameOver(){
@@ -749,7 +749,7 @@ function gameOver(){
     else if(!p1Alive && p2Alive){
         ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
         ctx.fillStyle = "red";
-        ctx.fillText("RED SUCKS AT DRIVING!", 340, 280);
+        ctx.fillText("RED EXPLODED!", gameScreen.clientWidth/2 - 260, 280);
         ctx.fillStyle = "green";
         ctx.fillText("GREEN WINS!", 500, 350);
           
@@ -758,7 +758,7 @@ function gameOver(){
     else if(!p2Alive && p1Alive){
         ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
         ctx.fillStyle = "green";
-        ctx.fillText("GREEN SUCKS AT DRIVING!", 260, 280);
+        ctx.fillText("GREEN EXPLODED!", gameScreen.clientWidth/2 - 320, 280);
         ctx.fillStyle = "red";
         ctx.fillText("RED WINS!", 500, 350);
     }
@@ -767,6 +767,9 @@ function gameOver(){
         ctx.fillText("2 losers?", 500, 350);
     }
     setTimeout(STOP = true, 1000);
+    // Turn off all event listeners
+    removeEventListener("keydown", keyDownHandler_race);
+    removeEventListener("keyup", keyUpHandler_race);
 
 }
 
@@ -805,4 +808,3 @@ function GameLoopRace() {
     }
     
 }
-

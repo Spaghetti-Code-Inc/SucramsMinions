@@ -26,6 +26,7 @@ function InitHockey(){
         fastActive: false,
         fastEndTime: 0,
         fastCooldownEnd: 0,
+        goals: 0,
     };
     p2 = {
         pos: [1300, 350],
@@ -44,6 +45,7 @@ function InitHockey(){
         fastActive: false,
         fastEndTime: 0,
         fastCooldownEnd: 0,
+        goals: 0,
     };
 }
 
@@ -84,6 +86,8 @@ function drawBackground(){
     ctx.arc(1300, 599, 100, 0, 0.5*Math.PI);
     ctx.stroke();
     ctx.closePath();
+
+    console.log("HEY");
 }
 
 function drawObjects(){
@@ -428,6 +432,7 @@ function checkGoal(puck){
         puck.momentumDirection = null;
         puck.pos[1] = HEIGHT/2;
         console.log("p2 goal");
+        p2.goals++;
         ctx.fillStyle = p2.color;
         ctx.font = "600 100px Courier New";
         ctx.fillText("GOAL!", WIDTH/2 - 120, 300);
@@ -463,6 +468,7 @@ function checkGoal(puck){
         puck.momentumDirection = null;
         puck.pos[1] = HEIGHT/2;
         console.log("p1 goal");
+        p1.goals++;
         ctx.fillStyle = p1.color;
         ctx.font = "600 100px Courier New";
         ctx.fillText("GOAL!", WIDTH/2 - 120, 300);
@@ -496,7 +502,9 @@ function checkGoal(puck){
             
         }, 2500);
     }
-    
+    if(p1.goals == 3 || p2.goals == 3){
+        STOP = true;
+    }
 }
 //key press handlers
 function keyDownHandler_hockey(e){

@@ -9,85 +9,80 @@ var STOP;
 var intervalID;
 var intervalStop;
 
-// Players / Multiple Games' Variables
-var p1; var p2;
+var p1, p2;
 // Pong variables
 var ball;
 // Snake variables
-var ds; var dds;
-var food; var foodWidth; var foodUp;
+var ds, dds;
+var food, foodWidth, foodUp;
 
-// Has game id, -1 means next game up
-//0 is pong, 1 is snake game, 2 is tank game, 3 is racing game, 4 is hockey
-currentGame = [1, 1, 1, 1]
-game = 0;
 
-function MotherLoop(){
-    // Always keep track of STOP which is when to switch to the next game
-    intervalStop = setInterval(CheckStop, 16.66)
+const gameIDs = [0, 1, 2, 3, 4, 5]; // 0: Pong, 1: Snake, 2: Tank, 3: Race, 4: Hockey, 5: Coin Jump
+var currentGame = [...gameIDs];
+var previousGame = -1;
 
-    // Turn off all event listeners
-    removeEventListener("keydown", keyDownHandler);
-    removeEventListener("keyup", keyUpHandler);
-    
-    // Start up game 1
-    PlayNext(currentGame[game]);
+function shuffleGames() {
+    for (let i = currentGame.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [currentGame[i], currentGame[j]] = [currentGame[j], currentGame[i]];
+    }
 }
 
-function PlayNext(currentGame){
-    // Pong
-    if(currentGame == 0){
+function getNextGame() {
+    let availableGames = currentGame.filter(game => game !== previousGame);
+    return availableGames[Math.floor(Math.random() * availableGames.length)];
+}
+
+function MotherLoop() {
+    shuffleGames();
+    intervalStop = setInterval(CheckStop, 16.66);
+
+    PlayNext(getNextGame()); 
+}
+
+function PlayNext(gameID) {
+    previousGame = gameID;
+
+    // Start the selected game
+    if (gameID === 0) {
         InitPong();
-        // Start game loop
-        intervalID = setInterval(GameLoopPong, 16.66)
-        // Start keypresses
-        document.addEventListener("keydown", keyDownHandler_pong, false);
-        document.addEventListener("keyup", keyUpHandler_pong, false);
-    }
-    
-    // Snake
-    else if(currentGame == 1){
+        intervalID = setInterval(GameLoopPong, 16.66);
+        document.addEventListener("keydown", keyDownHandler_pong);
+        document.addEventListener("keyup", keyUpHandler_pong);
+    } else if (gameID === 1) {
         InitSnake();
-        
         intervalID = setInterval(GameLoopSnake, 16.66);
         document.addEventListener("keydown", keyDownHandler_snake);
         document.addEventListener("keyup", keyUpHandler_snake);
-    }
-
-    // Tank
-    else if(currentGame == 2){
+    } else if (gameID === 2) {
         InitTank();
-
         intervalID = setInterval(GameLoopTank, 16.66);
         addEventListener("keydown", keyDownHandler_tank);
         addEventListener("keyup", keyUpHandler_tank);
-    }
-    // Racing Game
-    else if (currentGame == 3){
+    } else if (gameID === 3) {
         InitRace();
         intervalID = setInterval(GameLoopRace, 16.6);
         addEventListener("keydown", keyDownHandler_race);
         addEventListener("keyup", keyUpHandler_race);
-
-    }
-    else if (currentGame == 4){
+    } else if (gameID === 4) {
         InitHockey();
         intervalID = setInterval(GameLoopHockey, 16.6);
         addEventListener("keydown", keyDownHandler_hockey);
         addEventListener("keyup", keyUpHandler_hockey);
+    } else if (gameID === 5) {
+        InitCoinjump();
+        intervalID = setInterval(GameLoopCoinjump, 16.6);
+        addEventListener("keydown", keyDownHandler_coinjump);
+        addEventListener("keyup", keyUpHandler_coinjump);
     }
 }
 
-function CheckStop(){
-    if(STOP){
-        game++;
+function CheckStop() {
+    if (STOP) {
         clearInterval(intervalID);
-        
         STOP = false;
-        setTimeout(() => {PlayNext(currentGame[game])}, 1000)
+        setTimeout(() => { PlayNext(getNextGame()); }, 1000); // delay for smooth transition
     }
 }
 
 InitMenu();
-// probably should call mothterloop from menu.js
-// MotherLoop();
