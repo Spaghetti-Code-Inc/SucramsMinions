@@ -41,6 +41,7 @@ function MotherLoop() {
 }
 
 function PlayNext(gameID) {
+    removeAllEventListeners();
     previousGame = gameID;
 
     // Start the selected game
@@ -86,3 +87,23 @@ function CheckStop() {
 }
 
 InitMenu();
+
+function removeAllEventListeners() {
+    document.removeEventListener("keydown", keyDownHandler_pong);
+    document.removeEventListener("keyup", keyUpHandler_pong);
+    
+    document.removeEventListener("keydown", keyDownHandler_snake);
+    document.removeEventListener("keyup", keyUpHandler_snake);
+    
+    document.removeEventListener("keydown", keyDownHandler_tank);
+    document.removeEventListener("keyup", keyUpHandler_tank);
+    
+    document.removeEventListener("keydown", keyDownHandler_race);
+    document.removeEventListener("keyup", keyUpHandler_race);
+    
+    document.removeEventListener("keydown", keyDownHandler_hockey);
+    document.removeEventListener("keyup", keyUpHandler_hockey);
+    
+    document.removeEventListener("keydown", keyDownHandler_coinjump);
+    document.removeEventListener("keyup", keyUpHandler_coinjump);
+}

@@ -167,7 +167,7 @@ function drawPlayers(p1Position, p2Position) {
             ctx.translate(p1Position[0] + Math.cos(p1Angle*TO_RADIANS), p1Position[1] - Math.sin(p1Angle*TO_RADIANS));
             ctx.rotate(p1Angle * TO_RADIANS);
 
-            ctx.fillStyle = 'red';
+            ctx.fillStyle = 'green';
             ctx.fillRect(-20, -15, 40, 30);
             ctx.fillRect(20, -10, 30, 20);
             ctx.beginPath();
@@ -210,11 +210,10 @@ function drawPlayers(p1Position, p2Position) {
         
         if(p2Alive && potato){
             //move canvas to match player two rotation, draw, then revert
-            console.log("draw green");
             ctx.translate(p2Position[0] + Math.cos(p2Angle*TO_RADIANS), p2Position[1] - Math.sin(p2Angle*TO_RADIANS));
             ctx.rotate(p2Angle * TO_RADIANS);
 
-            ctx.fillStyle = 'green';
+            ctx.fillStyle = 'red';
             ctx.fillRect(-20, -15, 40, 30);
             ctx.fillRect(20, -10, 30, 20);
             ctx.beginPath();
