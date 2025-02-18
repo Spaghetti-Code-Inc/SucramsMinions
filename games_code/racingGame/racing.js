@@ -31,7 +31,7 @@ function InitRace() {
 
     //other vars
     explosion = new Image(500, 292);
-    explosion.src = 'racingGame\\Assets\\explosionSpriteSheet.png';
+    explosion.src = 'games_code\\racingGame\\Assets\\explosionSpriteSheet.png';
 
     //setting vars
     p1rotateSpeed = 1;
