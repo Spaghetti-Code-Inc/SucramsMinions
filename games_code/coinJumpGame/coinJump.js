@@ -5,7 +5,7 @@ function InitCoinjump() {
     p1width = 50;
     p1Color = 'green';
     p1Sprite = new Image(p1width, p1width);
-    p1Sprite.src = 'Assets\\greenGuy2.png';
+    p1Sprite.src = 'games_code/Assets/greenGuy2.png';
     p1leftPressed = false;
     p1rightPressed = false;
     //jump vars
@@ -25,7 +25,7 @@ function InitCoinjump() {
     p2width = 50;
     p2Color = 'red';
     p2Sprite = new Image(p2width, p2width);
-    p2Sprite.src = 'Assets\\redGuy2.png';
+    p2Sprite.src = 'games_code/Assets/redGuy2.png';
     p2leftPressed = false;
     p2rightPressed = false;
     //jump vars

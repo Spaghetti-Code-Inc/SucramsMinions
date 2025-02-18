@@ -361,7 +361,7 @@ function drawGUI_tank(){
         ctx.fillStyle = 'rgba(136, 136, 136, 0.5)';
         ctx.fillRect(gameScreen.clientWidth - (20 * i) - 50, 22.5, 10, 15);
     }
-
+    ctx.fillStyle = "white";
     if(!p1Alive){
         ctx.font = "50px Arial";
         ctx.fillText("Green Hit", 580, 300);
@@ -374,6 +374,7 @@ function drawGUI_tank(){
 
 function goToEndScreen_tank(){
     ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
+    ctx.fillStyle = "white";
     if(!p1Alive && p2Alive){
         ctx.font = "50px Arial";
         ctx.fillText("Red Hit", 700, 300);

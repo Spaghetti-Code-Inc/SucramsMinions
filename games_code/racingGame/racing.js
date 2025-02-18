@@ -737,19 +737,19 @@ function gameOver(){
     
     if(lapTrackerVar[0][0] == numLaps){
         ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
-        ctx.fillStyle = "red";
-        ctx.fillText("RED WINS!", 500, 300);
+        ctx.fillStyle = "white";
+        ctx.fillText("GREEN WINS!", 500, 300);
     }
     else if (lapTrackerVar[1][0] == numLaps){
         ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
-        ctx.fillStyle = "green";
-        ctx.fillText("GREEN WINS!", 500, 300);
+        ctx.fillStyle = "white";
+        ctx.fillText("RED WINS!", 500, 300);
     }
     else if(!p1Alive && p2Alive){
         ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
         ctx.fillStyle = "red";
         ctx.fillText("RED EXPLODED!", gameScreen.clientWidth/2 - 260, 280);
-        ctx.fillStyle = "green";
+        ctx.fillStyle = "white";
         ctx.fillText("GREEN WINS!", 500, 350);
           
         
@@ -758,7 +758,7 @@ function gameOver(){
         ctx.clearRect(0, 0, gameScreen.clientWidth, gameScreen.clientHeight);
         ctx.fillStyle = "green";
         ctx.fillText("GREEN EXPLODED!", gameScreen.clientWidth/2 - 320, 280);
-        ctx.fillStyle = "red";
+        ctx.fillStyle = "white";
         ctx.fillText("RED WINS!", 500, 350);
     }
     else{

@@ -1,12 +1,12 @@
 function InitMenu(){
     const logo = new Image();
-    logo.src = "Assets/classClashLogo.png";
+    logo.src = "games_code/Assets/classClashLogo.png";
     const button = new Image();
-    button.src = "Assets/buttonFrame.png";
+    button.src = "games_code/Assets/buttonFrame.png";
     const buttonHover = new Image();
-    buttonHover.src = "Assets/buttonFrameHover.png";
+    buttonHover.src = "games_code/Assets/buttonFrameHover.png";
     const backgroundImg = new Image();
-    backgroundImg.src = "Assets/deskMenuBackgroundCharacter.jpg";
+    backgroundImg.src = "games_code/Assets/deskMenuBackgroundCharacter.jpg";
 
     let mouseX = 0, mouseY = 0;
     let currentMenu = "main";
